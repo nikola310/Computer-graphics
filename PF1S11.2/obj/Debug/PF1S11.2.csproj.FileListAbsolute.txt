@@ -1,0 +1,26 @@
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\MainWindow.baml
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\MainWindow.g.cs
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\App.g.cs
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2_Content.g.cs
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2_MarkupCompile.cache
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.g.resources
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11._2.Properties.Resources.resources
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.csproj.GenerateResource.Cache
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.csproj.CoreCompileInputs.cache
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\AssimpLib\Assimp32.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\AssimpLib\Assimp64.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\AssimpLib\AssimpNet.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\Dependencies\SharpGL.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\Dependencies\SharpGL.SceneGraph.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\Dependencies\SharpGL.WPF.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\3D Models\3d-model.3ds
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\PF1S11.2.exe.config
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\PF1S11.2.exe
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\PF1S11.2.pdb
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\AssimpNet.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\SharpGL.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\SharpGL.SceneGraph.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\bin\Debug\SharpGL.WPF.dll
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.exe
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.pdb
+C:\Users\Nikola\Desktop\Projekat\PF1S11.2\PF1S11.2\obj\Debug\PF1S11.2.csprojResolveAssemblyReference.cache
