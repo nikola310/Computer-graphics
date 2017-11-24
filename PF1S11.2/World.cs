@@ -174,15 +174,28 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_DEPTH_TEST);
             gl.Enable(OpenGL.GL_CULL_FACE);
 
+
+//            gl.PushMatrix();
+  //          gl.PopMatrix();
+
             gl.PushMatrix();
-            gl.Translate(0.0f, 0.0f, -m_sceneDistance);
+            gl.Translate(0.0f, -750f, -m_sceneDistance);
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
             gl.Color(1f, 1f, 1f);
             //gl.Translate(0.5f, -5f, 0f);
-            gl.DrawText3D("Arial", 50f, 1f, 0.1f, "teapot");
             m_scene.Draw();
+
+            //iscrtavanje podloge
+            gl.Color(0.09f, 0.43f, 0.34f);
+            gl.Begin(OpenGL.GL_QUADS);
+            gl.Vertex(-250f, 0f, 250f);
+            gl.Vertex(-250f, 0f, -250f);
+            gl.Vertex(250f, 0f, -250f);
+            gl.Vertex(250f, 0f, 250f);
+            gl.End();
+
             gl.PopMatrix();
 
             gl.PushMatrix();
