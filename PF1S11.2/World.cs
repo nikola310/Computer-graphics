@@ -66,6 +66,9 @@ namespace AssimpSample
         /// </summary>
         private int m_height;
 
+        Cube cb;
+        Cylinder cyl;
+
         #endregion Atributi
 
         #region Properties
@@ -136,6 +139,8 @@ namespace AssimpSample
             this.m_scene = new AssimpScene(scenePath, sceneFileName, gl);
             this.m_width = width;
             this.m_height = height;
+            cb = new Cube();
+            cyl = new Cylinder();
         }
 
         /// <summary>
@@ -175,38 +180,87 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_CULL_FACE);
 
 
-//            gl.PushMatrix();
-  //          gl.PopMatrix();
+            //            gl.PushMatrix();
+            //          gl.PopMatrix();
+            gl.MatrixMode(OpenGL.GL_PROJECTION);
+            gl.LoadIdentity();
+            gl.Perspective(45f, (double)m_width / m_height, 0.5f, 20000f);
 
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
             gl.Translate(0.0f, -750f, -m_sceneDistance);
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
-            gl.Color(1f, 1f, 1f);
             //gl.Translate(0.5f, -5f, 0f);
             m_scene.Draw();
+                gl.PushMatrix();
+                //iscrtavanje podloge
+                //gl.Color(0.09f, 0.43f, 0.34f);
+                gl.Begin(OpenGL.GL_QUADS);
+                gl.Vertex(250f, 0f, 250f);
+                gl.Vertex(250f, 0f, -250f);
+                gl.Vertex(-250f, 0f, -250f);
+                gl.Vertex(-250f, 0f, 250f);
+                gl.End();
+                gl.PopMatrix();
 
-            //iscrtavanje podloge
-            gl.Color(0.09f, 0.43f, 0.34f);
-            gl.Begin(OpenGL.GL_QUADS);
-            gl.Vertex(-250f, 0f, 250f);
-            gl.Vertex(-250f, 0f, -250f);
-            gl.Vertex(250f, 0f, -250f);
-            gl.Vertex(250f, 0f, 250f);
-            gl.End();
-
+            //gl.PushMatrix();
+            //drawBlue3DText(gl);
+            //
+                gl.PushMatrix();
+                gl.Color(1f, 0f, 0f);
+                gl.Scale(50f, 50f, 50f);
+                gl.Translate(5, 0, 5);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
             gl.PopMatrix();
+            //gl.PopMatrix();
 
-            gl.PushMatrix();
+            /*gl.PushMatrix();
             gl.Color(1f, 1f, 1f);
             //gl.Translate(0.5f, -5f, 0f);
             gl.DrawText3D("Arial", 50f, 1f, 0.1f, "teapot");
             gl.DrawText(10, 30, 0.0f, 1.0f, 0.0f, "Courier New", 12, "Perspektiva");
-            gl.PopMatrix();
+            gl.PopMatrix();*/
+
+
 
             // Oznaci kraj iscrtavanja
             gl.Flush();
+        }
+
+        public void drawStairs(OpenGL gl)
+        {
+            gl.PushMatrix();
+
+            gl.PopMatrix();
+        }
+
+
+        public void drawBlue3DText(OpenGL gl)
+        {
+            float txtX = 0.0f;
+            float txtY = 0.0f;
+            float txtZ = -5.0f;
+            //redefinisanje projekcije tako da bude u donjem desnom uglu
+            gl.MatrixMode(OpenGL.GL_PROJECTION);
+            gl.LoadIdentity();
+            //gl.Ortho2D(-100.0f, 60.0f, -130.0f, 50.0f);
+            //gl.Ortho2D(m_)
+            //gl.Ortho2D()
+            //gl.Perspective(35.0, m_width / (double)m_height, 0.5, 40.0);
+            gl.Color(1f, 1f, 1f);
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
+            gl.PushMatrix();
+            gl.Scale(10.0f, 10.0f, 10.0f);
+            gl.PushMatrix();
+            gl.Translate(txtX, txtY, txtZ);
+            gl.DrawText3D("Arial", 12f, 0f, 0f, "Predmet: Racunarska grafika");
+            gl.PopMatrix();
+            gl.Viewport((m_width / 4) * 3, (m_height / 4) * 3, m_width / 4, m_height / 4);
+            gl.DrawText(10, 30, 0.0f, 1.0f, 0.0f, "Courier New", 12, "Perspektiva");
+            gl.PopMatrix();
         }
 
 
@@ -219,10 +273,10 @@ namespace AssimpSample
             m_height = height;
             gl.MatrixMode(OpenGL.GL_PROJECTION);      // selektuj Projection Matrix
             gl.LoadIdentity();
-            //definisanje perspektive
-            gl.Perspective(45f, (double)width / height, 0.5f, 20000f);
             //podesavanje Viewport preko celog prozora
             gl.Viewport(0, 0, m_width, m_height);
+            //definisanje perspektive
+            gl.Perspective(45f, (double)width / height, 0.5f, 20000f);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.LoadIdentity();                // resetuj ModelView Matrix
         }
