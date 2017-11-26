@@ -194,26 +194,50 @@ namespace AssimpSample
             gl.Scale(20, 20, 20);
             //gl.Translate(0.5f, -5f, 0f);
             m_scene.Draw();
-                gl.PushMatrix();
-                //iscrtavanje podloge
-                //gl.Color(0.09f, 0.43f, 0.34f);
-                gl.Begin(OpenGL.GL_QUADS);
-                gl.Vertex(250f, 0f, 250f);
-                gl.Vertex(250f, 0f, -250f);
-                gl.Vertex(-250f, 0f, -250f);
-                gl.Vertex(-250f, 0f, 250f);
-                gl.End();
-                gl.PopMatrix();
+            gl.PushMatrix();
+            //iscrtavanje podloge
+            gl.Color(0.09f, 0.43f, 0.34f);
+            gl.Begin(OpenGL.GL_QUADS);
+            gl.Vertex(250f, 0f, 250f);
+            gl.Vertex(250f, 0f, -250f);
+            gl.Vertex(-250f, 0f, -250f);
+            gl.Vertex(-250f, 0f, 250f);
+            gl.End();
+            gl.PopMatrix();
 
             //gl.PushMatrix();
             //drawBlue3DText(gl);
-            //
-                gl.PushMatrix();
-                gl.Color(1f, 0f, 0f);
-                gl.Scale(50f, 50f, 50f);
-                gl.Translate(5, 0, 5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
+            //iscrtavanje kocki
+            //===========================================
+            gl.PushMatrix();
+            gl.Color(1f, 0f, 0f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(5, 0, 0);
+            cb.Render(gl, RenderMode.Render);
+            gl.PopMatrix();
+
+            gl.PushMatrix();
+            gl.Color(0f, 1f, 0f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(7, 2, 0);
+            cb.Render(gl, RenderMode.Render);
+            gl.PopMatrix();
+
+            gl.PushMatrix();
+            gl.Color(0f, 0f, 1f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(9, 4, 0);
+            cb.Render(gl, RenderMode.Render);
+            gl.PopMatrix();
+
+            gl.PushMatrix();
+            gl.Color(0f, 1f, 1f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(11, 6, 0);
+            cb.Render(gl, RenderMode.Render);
+            gl.PopMatrix();
+            //===================================
+
             gl.PopMatrix();
             //gl.PopMatrix();
 
