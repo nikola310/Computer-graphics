@@ -207,36 +207,8 @@ namespace AssimpSample
 
             //gl.PushMatrix();
             //drawBlue3DText(gl);
-            //iscrtavanje kocki
-            //===========================================
-            gl.PushMatrix();
-            gl.Color(1f, 0f, 0f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(5, 0, 0);
-            cb.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
 
-            gl.PushMatrix();
-            gl.Color(0f, 1f, 0f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(7, 2, 0);
-            cb.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
-
-            gl.PushMatrix();
-            gl.Color(0f, 0f, 1f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(9, 4, 0);
-            cb.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
-
-            gl.PushMatrix();
-            gl.Color(0f, 1f, 1f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(11, 6, 0);
-            cb.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
-            //===================================
+            drawEscalator(gl);
 
             gl.PopMatrix();
             //gl.PopMatrix();
@@ -254,13 +226,84 @@ namespace AssimpSample
             gl.Flush();
         }
 
-        public void drawStairs(OpenGL gl)
+        /// <summary>
+        /// Iscrtava pokretne stepenice.
+        /// </summary>
+        public void drawEscalator(OpenGL gl)
         {
-            gl.PushMatrix();
+            //iscrtavanje samih stepenica
+            //===========================================
+            float scale = 15f;
+            float translateX = 5;
+            float translateY = 0;
+            float translateZ = 0;
 
+            drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
+            translateZ += 2;
+            drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
+            //=====================================
+            //iscrtavanje tela stepenica - cilindri
+            //=====================================
+            cyl.BaseRadius = 2;
+            cyl.Height = 5;
+            cyl.TopRadius = 2;
+
+            gl.PushMatrix();
+            gl.Color(0.5f, 0.5f, 0.5f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(8f, 0f, -1.5f);
+            cyl.CreateInContext(gl);
+            cyl.Render(gl, RenderMode.Render);
             gl.PopMatrix();
+
+            gl.PushMatrix();
+            gl.Color(0.5f, 0.5f, 0f);
+            gl.Scale(15f, 15f, 15f);
+            gl.Translate(10.5f, 3.0f, -1.5f);
+            cyl.CreateInContext(gl);
+            cyl.Render(gl, RenderMode.Render);
+            gl.PopMatrix();
+            //===================================
+            //ostatak tela stepenica - kocke
+            translateX = 13;
+            translateY = 0;
+            translateZ = 0;
+            drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
+            translateZ += 2;
+            drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
+            //===============================
+        }
+        /// <summary>
+        /// Iscrtava kocke za pokretne stepenice
+        /// </summary>
+        public void drawCubesForEscalator(OpenGL gl, float translateX, float translateY, float translateZ, float scale)
+        {
+            for (int i = 0; i <= 6; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(translateX + i, translateY + i, translateZ);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
         }
 
+        /// <summary>
+        /// Iscrtava kocke za telo pokretnih stepenica
+        /// </summary>
+        public void drawCubesForEscalatorBody(OpenGL gl, float translateX, float translateY, float translateZ, float scale)
+        {
+            for (int i = 0; i <= 6; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.0f, 0.75f, 0.89f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(translateX, translateY + i, translateZ);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+        }
 
         public void drawBlue3DText(OpenGL gl)
         {
