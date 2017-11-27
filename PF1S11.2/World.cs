@@ -179,9 +179,6 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_DEPTH_TEST);
             gl.Enable(OpenGL.GL_CULL_FACE);
 
-
-            //            gl.PushMatrix();
-            //          gl.PopMatrix();
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
             gl.Perspective(45f, (double)m_width / m_height, 0.5f, 20000f);
@@ -192,7 +189,6 @@ namespace AssimpSample
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
-            //gl.Translate(0.5f, -5f, 0f);
             m_scene.Draw();
             gl.PushMatrix();
             //iscrtavanje podloge
@@ -205,23 +201,12 @@ namespace AssimpSample
             gl.End();
             gl.PopMatrix();
 
-            //gl.PushMatrix();
-            //drawBlue3DText(gl);
-
             drawEscalator(gl);
 
             gl.PopMatrix();
-            //gl.PopMatrix();
 
-            /*gl.PushMatrix();
-            gl.Color(1f, 1f, 1f);
-            //gl.Translate(0.5f, -5f, 0f);
-            gl.DrawText3D("Arial", 50f, 1f, 0.1f, "teapot");
-            gl.DrawText(10, 30, 0.0f, 1.0f, 0.0f, "Courier New", 12, "Perspektiva");
-            gl.PopMatrix();*/
-
-
-
+            drawBlue3DText(gl);
+           
             // Oznaci kraj iscrtavanja
             gl.Flush();
         }
@@ -305,29 +290,47 @@ namespace AssimpSample
             }
         }
 
+        /// <summary>
+        /// Iscrtava 3D tekst u donjem desnom uglu prozora
+        /// </summary>
+        /// <param name="gl"></param>
         public void drawBlue3DText(OpenGL gl)
         {
-            float txtX = 0.0f;
-            float txtY = 0.0f;
-            float txtZ = -5.0f;
-            //redefinisanje projekcije tako da bude u donjem desnom uglu
+            //==========================
+            
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
-            //gl.Ortho2D(-100.0f, 60.0f, -130.0f, 50.0f);
-            //gl.Ortho2D(m_)
-            //gl.Ortho2D()
-            //gl.Perspective(35.0, m_width / (double)m_height, 0.5, 40.0);
-            gl.Color(1f, 1f, 1f);
+            gl.Ortho2D(-100.0f, 70.0f, -130.0f, 50.0f);
+            float textx = 0.0f;
+            float textz = 0.0f;
+            float texty = -20.0f;
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
-            gl.Scale(10.0f, 10.0f, 10.0f);
+            gl.Color(0f, 0f, 1f);
+            gl.Scale(5.0f, 5.0f, 5.0f);
             gl.PushMatrix();
-            gl.Translate(txtX, txtY, txtZ);
-            gl.DrawText3D("Arial", 12f, 0f, 0f, "Predmet: Racunarska grafika");
+            gl.Translate(textx, texty, textz);
+            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Predmet: Racunarska grafika");
+            gl.PopMatrix();
+            gl.PushMatrix();
+            gl.Translate(textx, texty - 1.0f, textz);
+            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Sk.god: 2017/18.");
+            gl.PopMatrix();
+            gl.PushMatrix();
+            gl.Translate(textx, texty - 2.0f, textz);
+            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Ime: Nikola");
+            gl.PopMatrix();
+            gl.PushMatrix();
+            gl.Translate(textx, texty - 3.0f, textz);
+            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Prezime: Stojanovic");
+            gl.PopMatrix();
+            gl.PushMatrix();
+            gl.Translate(textx, texty - 4.0f, textz);
+            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Sifra zad: 11.2");
             gl.PopMatrix();
             gl.Viewport((m_width / 4) * 3, (m_height / 4) * 3, m_width / 4, m_height / 4);
-            gl.DrawText(10, 30, 0.0f, 1.0f, 0.0f, "Courier New", 12, "Perspektiva");
             gl.PopMatrix();
+            //==========================
         }
 
 
@@ -347,6 +350,8 @@ namespace AssimpSample
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.LoadIdentity();                // resetuj ModelView Matrix
         }
+
+
 
         /// <summary>
         ///  Implementacija IDisposable interfejsa.
