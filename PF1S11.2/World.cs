@@ -200,10 +200,10 @@ namespace AssimpSample
             //iscrtavanje podloge
             gl.Color(0.09f, 0.43f, 0.34f);
             gl.Begin(OpenGL.GL_QUADS);
-            gl.Vertex(250f, 0f, 250f);
-            gl.Vertex(250f, 0f, -250f);
-            gl.Vertex(-250f, 0f, -250f);
-            gl.Vertex(-250f, 0f, 250f);
+            gl.Vertex(300f, 0f, 300f);
+            gl.Vertex(300f, 0f, -300f);
+            gl.Vertex(-300f, 0f, -300f);
+            gl.Vertex(-300f, 0f, 300f);
             gl.End();
             gl.PopMatrix();
 
@@ -234,7 +234,6 @@ namespace AssimpSample
             drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
             //=====================================
             //iscrtavanje tela stepenica - cilindri
-            //=====================================
             cyl.BaseRadius = 2;
             cyl.Height = 5;
             cyl.TopRadius = 2;
