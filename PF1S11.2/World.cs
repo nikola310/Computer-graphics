@@ -14,6 +14,7 @@ using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
 using SharpGL.SceneGraph.Core;
 using SharpGL;
+using System.Collections.Generic;
 
 namespace AssimpSample
 {
@@ -25,16 +26,6 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
-
-        /// <summary>
-        ///	 Ugao rotacije Meseca
-        /// </summary>
-        private float m_moonRotation = 0.0f;
-
-        /// <summary>
-        ///	 Ugao rotacije Zemlje
-        /// </summary>
-        private float m_earthRotation = 0.0f;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -65,6 +56,21 @@ namespace AssimpSample
         ///	 Visina OpenGL kontrole u pikselima.
         /// </summary>
         private int m_height;
+
+        /// <summary>
+        /// Tip fonta za iscrtavanje teksta u donjem desnom uglu.
+        /// </summary>
+        private string fontType = "Arial Bold";
+
+        /// <summary>
+        /// Velicina fonta za iscrtavanje teksta u donjem desnom uglu.
+        /// </summary>
+        private float fontSize = 12f;
+
+        /// <summary>
+        /// Tekst koji ce biti ispisan u donjem desnom uglu.
+        /// </summary>
+        List<string> rightCornerText = new List<string>() { "Predmet: Racunarska grafika", "Sk.god: 2017/18.", "Ime: Nikola", "Prezime: Stojanovic", "Sifra zad: 11.2" };
 
         Cube cb;
         Cylinder cyl;
@@ -206,7 +212,7 @@ namespace AssimpSample
             gl.PopMatrix();
 
             drawBlue3DText(gl);
-           
+
             // Oznaci kraj iscrtavanja
             gl.Flush();
         }
@@ -296,41 +302,33 @@ namespace AssimpSample
         /// <param name="gl"></param>
         public void drawBlue3DText(OpenGL gl)
         {
-            //==========================
-            
+            //===================================
+            //definisanje potrebnih promenljivih
+            float x = 0.0f;
+            float y = -20.5f;
+            float z = 0.0f;
+            float scaleFactor = 5.0f;
+            float offset = 0f;
+            //===================================
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
-            gl.Ortho2D(-100.0f, 70.0f, -130.0f, 50.0f);
-            float textx = 0.0f;
-            float textz = 0.0f;
-            float texty = -20.0f;
+            gl.Ortho2D(-115f, 65.0f, -125.0f, 10.0f);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
+
             gl.PushMatrix();
             gl.Color(0f, 0f, 1f);
-            gl.Scale(5.0f, 5.0f, 5.0f);
-            gl.PushMatrix();
-            gl.Translate(textx, texty, textz);
-            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Predmet: Racunarska grafika");
+            gl.Scale(scaleFactor, scaleFactor, scaleFactor);
+
+            //foreach petlja za iscrtavanje teksta u donjem desnom uglu.
+            foreach (string s in rightCornerText)
+            {
+                gl.PushMatrix();
+                gl.Translate(x, y - offset, z);
+                gl.DrawText3D(fontType, fontSize, 0f, 0f, s);
+                gl.PopMatrix();
+                offset++;
+            }
             gl.PopMatrix();
-            gl.PushMatrix();
-            gl.Translate(textx, texty - 1.0f, textz);
-            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Sk.god: 2017/18.");
-            gl.PopMatrix();
-            gl.PushMatrix();
-            gl.Translate(textx, texty - 2.0f, textz);
-            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Ime: Nikola");
-            gl.PopMatrix();
-            gl.PushMatrix();
-            gl.Translate(textx, texty - 3.0f, textz);
-            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Prezime: Stojanovic");
-            gl.PopMatrix();
-            gl.PushMatrix();
-            gl.Translate(textx, texty - 4.0f, textz);
-            gl.DrawText3D("Arial Bold", 14f, 0f, 0f, "Sifra zad: 11.2");
-            gl.PopMatrix();
-            gl.Viewport((m_width / 4) * 3, (m_height / 4) * 3, m_width / 4, m_height / 4);
-            gl.PopMatrix();
-            //==========================
         }
 
 
