@@ -229,40 +229,101 @@ namespace AssimpSample
             float translateY = 0;
             float translateZ = 0;
 
-            drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
+            //drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
             translateZ += 2;
-            drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
+            //drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
+
+            for (int i = 0; i <= 8; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(5 + i, 0, 0);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 6; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(7 + i, 2, 0);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 4; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(9 + i, 4, 0);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 2; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(11 + i, 6, 0);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 8; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(5 + i, 0, 2);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 6; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(7 + i, 2, 2);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 4; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(9 + i, 4, 2);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
+            for (int i = 0; i <= 2; i += 2)
+            {
+                gl.PushMatrix();
+                gl.Color(0.89f, 0.75f, 0f);
+                gl.Scale(scale, scale, scale);
+                gl.Translate(11 + i, 6, 2);
+                cb.Render(gl, RenderMode.Render);
+                gl.PopMatrix();
+            }
+
             //=====================================
-            //iscrtavanje tela stepenica - cilindri
-            cyl.BaseRadius = 2;
-            cyl.Height = 5;
-            cyl.TopRadius = 2;
-
-            gl.PushMatrix();
-            gl.Color(0.5f, 0.5f, 0.5f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(8f, 0f, -1.5f);
-            cyl.CreateInContext(gl);
-            cyl.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
-
-            gl.PushMatrix();
-            gl.Color(0.5f, 0.5f, 0f);
-            gl.Scale(15f, 15f, 15f);
-            gl.Translate(10.5f, 3.0f, -1.5f);
-            cyl.CreateInContext(gl);
-            cyl.Render(gl, RenderMode.Render);
-            gl.PopMatrix();
-            //===================================
             //ostatak tela stepenica - kocke
             translateX = 13;
             translateY = 0;
             translateZ = 0;
-            drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
+            //drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
             translateZ += 2;
-            drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
+            //drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
             //===============================
         }
+
         /// <summary>
         /// Iscrtava kocke za pokretne stepenice
         /// </summary>
