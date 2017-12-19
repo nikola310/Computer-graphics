@@ -134,6 +134,8 @@
     <Content Include="Dependencies\SharpGL.WPF.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="images\ceramic.jpg" />
+    <Resource Include="images\metal.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

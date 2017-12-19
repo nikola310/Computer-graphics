@@ -68,6 +68,17 @@ namespace AssimpSample
         private float fontSize = 12f;
 
         /// <summary>
+        ///	 Identifikatori tekstura za jednostavniji pristup teksturama
+        /// </summary>
+        private enum TextureObjects { Metal = 0, Ceramic };
+        private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
+
+        /// <summary>
+        ///	 Putanje do slika koje se koriste za teksture
+        /// </summary>
+        private string[] m_textureFiles = { "..//..//images//metal.jpg", "..//..//images//ceramic.jpg" };
+
+        /// <summary>
         /// Tekst koji ce biti ispisan u donjem desnom uglu.
         /// </summary>
         List<string> rightCornerText = new List<string>() { "Predmet: Racunarska grafika", "Sk.god: 2017/18.", "Ime: Nikola", "Prezime: Stojanovic", "Sifra zad: 11.2" };
@@ -189,6 +200,11 @@ namespace AssimpSample
             gl.LoadIdentity();
             gl.Perspective(45f, (double)m_width / m_height, 0.5f, 20000f);
 
+            //podesavanje tekstura
+            setTextures(gl);
+
+
+
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
             gl.Translate(0.0f, -750f, -m_sceneDistance);
@@ -196,16 +212,10 @@ namespace AssimpSample
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
             m_scene.Draw();
-            gl.PushMatrix();
+
+
             //iscrtavanje podloge
-            gl.Color(0.09f, 0.43f, 0.34f);
-            gl.Begin(OpenGL.GL_QUADS);
-            gl.Vertex(300f, 0f, 300f);
-            gl.Vertex(300f, 0f, -300f);
-            gl.Vertex(-300f, 0f, -300f);
-            gl.Vertex(-300f, 0f, 300f);
-            gl.End();
-            gl.PopMatrix();
+            drawFloor(gl);
 
             drawEscalator(gl);
 
@@ -218,6 +228,36 @@ namespace AssimpSample
         }
 
         /// <summary>
+        /// Iscrtava podlogu
+        /// </summary>
+        /// <param name="gl"></param>
+        public void drawFloor(OpenGL gl)
+        {
+            gl.PushMatrix();
+            gl.Color(0.09f, 0.43f, 0.34f);
+            gl.Begin(OpenGL.GL_QUADS);
+            gl.Vertex(300f, 0f, 300f);
+            gl.Vertex(300f, 0f, -300f);
+            gl.Vertex(-300f, 0f, -300f);
+            gl.Vertex(-300f, 0f, 300f);
+            gl.End();
+            gl.PopMatrix();
+        }
+
+        /// <summary>
+        /// Podesava teksture
+        /// </summary>
+        /// <param name="gl"></param>
+        public void setTextures(OpenGL gl)
+        {
+            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);
+            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);
+            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
+            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
+        }
+
+        /// <summary>
         /// Iscrtava pokretne stepenice.
         /// </summary>
         public void drawEscalator(OpenGL gl)
@@ -225,20 +265,15 @@ namespace AssimpSample
             //iscrtavanje samih stepenica
             //===========================================
             float scale = 15f;
-            float translateX = 5;
-            float translateY = 0;
-            float translateZ = 0;
 
-            //drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
-            translateZ += 2;
-            //drawCubesForEscalator(gl, translateX, translateY, translateZ, scale);
-
+            #region Iscrtavanje stepenica
             for (int i = 0; i <= 8; i += 2)
             {
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(5 + i, 0, 0);
+                gl.Translate(5 + i, 0, -0.5);
+                
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -248,7 +283,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(7 + i, 2, 0);
+                gl.Translate(7 + i, 2, -0.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -258,7 +293,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(9 + i, 4, 0);
+                gl.Translate(9 + i, 4, -0.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -268,7 +303,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(11 + i, 6, 0);
+                gl.Translate(11 + i, 6, -0.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -278,7 +313,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(5 + i, 0, 2);
+                gl.Translate(5 + i, 0, 1.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -288,7 +323,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(7 + i, 2, 2);
+                gl.Translate(7 + i, 2, 1.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -298,7 +333,7 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(9 + i, 4, 2);
+                gl.Translate(9 + i, 4, 1.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -308,52 +343,15 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
-                gl.Translate(11 + i, 6, 2);
+                gl.Translate(11 + i, 6, 1.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
-
+            #endregion Iscrtavanje stepenica
+            
             //=====================================
-            //ostatak tela stepenica - kocke
-            translateX = 13;
-            translateY = 0;
-            translateZ = 0;
-            //drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
-            translateZ += 2;
-            //drawCubesForEscalatorBody(gl, translateX, translateY, translateZ, scale);
+            //cilindar - drska
             //===============================
-        }
-
-        /// <summary>
-        /// Iscrtava kocke za pokretne stepenice
-        /// </summary>
-        public void drawCubesForEscalator(OpenGL gl, float translateX, float translateY, float translateZ, float scale)
-        {
-            for (int i = 0; i <= 6; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
-                gl.Scale(scale, scale, scale);
-                gl.Translate(translateX + i, translateY + i, translateZ);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-        }
-
-        /// <summary>
-        /// Iscrtava kocke za telo pokretnih stepenica
-        /// </summary>
-        public void drawCubesForEscalatorBody(OpenGL gl, float translateX, float translateY, float translateZ, float scale)
-        {
-            for (int i = 0; i <= 6; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Color(0.0f, 0.75f, 0.89f);
-                gl.Scale(scale, scale, scale);
-                gl.Translate(translateX, translateY + i, translateZ);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
         }
 
         /// <summary>
