@@ -10,6 +10,8 @@ using Assimp;
 using System.IO;
 using System.Reflection;
 using SharpGL.SceneGraph;
+using System.Drawing;
+using System.Drawing.Imaging;
 using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
 using SharpGL.SceneGraph.Core;
@@ -82,6 +84,11 @@ namespace AssimpSample
         /// Tekst koji ce biti ispisan u donjem desnom uglu.
         /// </summary>
         List<string> rightCornerText = new List<string>() { "Predmet: Racunarska grafika", "Sk.god: 2017/18.", "Ime: Nikola", "Prezime: Stojanovic", "Sifra zad: 11.2" };
+
+        /// <summary>
+        ///	 Identifikatori OpenGL tekstura
+        /// </summary>
+        private uint[] m_textures = null;
 
         Cube cb;
         Cylinder cyl;
@@ -158,6 +165,7 @@ namespace AssimpSample
             this.m_height = height;
             cb = new Cube();
             cyl = new Cylinder();
+            m_textures = new uint[m_textureCount];
         }
 
         /// <summary>
@@ -182,6 +190,36 @@ namespace AssimpSample
             // Model sencenja na flat (konstantno)
             gl.ShadeModel(OpenGL.GL_FLAT);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
+
+            // Teksture se primenjuju sa parametrom decal
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
+
+            // Ucitaj slike i kreiraj teksture
+            gl.GenTextures(m_textureCount, m_textures);
+            for (int i = 0; i < m_textureCount; ++i)
+            {
+                // Pridruzi teksturu odgovarajucem identifikatoru
+                gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[i]);
+
+                // Ucitaj sliku i podesi parametre teksture
+                Bitmap image = new Bitmap(m_textureFiles[i]);
+                // rotiramo sliku zbog koordinantog sistema opengl-a
+                image.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+                // RGBA format (dozvoljena providnost slike tj. alfa kanal)
+                BitmapData imageData = image.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+                gl.Build2DMipmaps(OpenGL.GL_TEXTURE_2D, (int)OpenGL.GL_RGBA8, image.Width, image.Height, OpenGL.GL_BGRA, OpenGL.GL_UNSIGNED_BYTE, imageData.Scan0);
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);		// Nearest neighbor Filtering
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);     // Nearest neighbor Filtering
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
+
+                image.UnlockBits(imageData);
+                image.Dispose();
+            }
+
             m_scene.LoadScene();
             m_scene.Initialize();
         }
@@ -201,9 +239,7 @@ namespace AssimpSample
             gl.Perspective(45f, (double)m_width / m_height, 0.5f, 20000f);
 
             //podesavanje tekstura
-            setTextures(gl);
-
-
+            //setTextures(gl
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
@@ -212,7 +248,6 @@ namespace AssimpSample
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
             m_scene.Draw();
-
 
             //iscrtavanje podloge
             drawFloor(gl);
@@ -234,11 +269,28 @@ namespace AssimpSample
         public void drawFloor(OpenGL gl)
         {
             gl.PushMatrix();
-            gl.Color(0.09f, 0.43f, 0.34f);
-            gl.Begin(OpenGL.GL_QUADS);
-            gl.Vertex(300f, 0f, 300f);
+            //gl.Color(0.09f, 0.43f, 0.34f);
+            //gl.Begin(OpenGL.GL_QUADS);
+            /*gl.Vertex(300f, 0f, 300f);
             gl.Vertex(300f, 0f, -300f);
             gl.Vertex(-300f, 0f, -300f);
+            gl.Vertex(-300f, 0f, 300f);
+            gl.End();
+            gl.PopMatrix();*/
+
+
+            // Pod tunela
+            gl.MatrixMode(OpenGL.GL_TEXTURE_MATRIX);
+            //gl.Scale(10f, 10f, 10f);
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Ceramic]);
+            gl.Begin(OpenGL.GL_QUADS);
+            gl.TexCoord(0.0f, 0.0f);
+            gl.Vertex(300f, 0f, 300f);
+            gl.TexCoord(0.0f, 1.0f);
+            gl.Vertex(300f, 0f, -300f);
+            gl.TexCoord(1.0f, 1.0f);
+            gl.Vertex(-300f, 0f, -300f);
+            gl.TexCoord(1.0f, 0.0f);
             gl.Vertex(-300f, 0f, 300f);
             gl.End();
             gl.PopMatrix();
@@ -267,13 +319,14 @@ namespace AssimpSample
             float scale = 15f;
 
             #region Iscrtavanje stepenica
+            gl.PushMatrix();
+            gl.Color(0.5f, 0.5f, 0.5f);
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Metal]);
             for (int i = 0; i <= 8; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(5 + i, 0, -0.5);
-                
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -281,7 +334,6 @@ namespace AssimpSample
             for (int i = 0; i <= 6; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(7 + i, 2, -0.5);
                 cb.Render(gl, RenderMode.Render);
@@ -291,7 +343,6 @@ namespace AssimpSample
             for (int i = 0; i <= 4; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(9 + i, 4, -0.5);
                 cb.Render(gl, RenderMode.Render);
@@ -301,7 +352,6 @@ namespace AssimpSample
             for (int i = 0; i <= 2; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(11 + i, 6, -0.5);
                 cb.Render(gl, RenderMode.Render);
@@ -311,7 +361,6 @@ namespace AssimpSample
             for (int i = 0; i <= 8; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(5 + i, 0, 1.5);
                 cb.Render(gl, RenderMode.Render);
@@ -321,7 +370,6 @@ namespace AssimpSample
             for (int i = 0; i <= 6; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(7 + i, 2, 1.5);
                 cb.Render(gl, RenderMode.Render);
@@ -331,7 +379,6 @@ namespace AssimpSample
             for (int i = 0; i <= 4; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(9 + i, 4, 1.5);
                 cb.Render(gl, RenderMode.Render);
@@ -341,16 +388,17 @@ namespace AssimpSample
             for (int i = 0; i <= 2; i += 2)
             {
                 gl.PushMatrix();
-                gl.Color(0.89f, 0.75f, 0f);
                 gl.Scale(scale, scale, scale);
                 gl.Translate(11 + i, 6, 1.5);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
+            gl.PopMatrix();
             #endregion Iscrtavanje stepenica
-            
+
             //=====================================
             //cilindar - drska
+
             //===============================
         }
 
