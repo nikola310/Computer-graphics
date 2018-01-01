@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,11 +27,19 @@ namespace PF1S11._2
     public partial class MainWindow : Window
     {
         #region Atributi
+        [DllImport("User32.dll")]
+        private static extern bool SetCursorPos(int X, int Y);
+        private const int BORDER = 100;
 
         /// <summary>
         ///	 Instanca OpenGL "sveta" - klase koja je zaduzena za iscrtavanje koriscenjem OpenGL-a.
         /// </summary>
         World m_world = null;
+
+        /// <summary>
+        ///  Pamti staru poziciju kursora da bi mogli da racunamo pomeraj.
+        /// </summary>
+        private Point oldPos;
 
         #endregion Atributi
 
