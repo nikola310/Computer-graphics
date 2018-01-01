@@ -17,7 +17,6 @@ using SharpGL.SceneGraph.Quadrics;
 using SharpGL.SceneGraph.Core;
 using SharpGL;
 using System.Collections.Generic;
-using SharpGL.SceneGraph.Cameras;
 
 namespace AssimpSample
 {
@@ -29,16 +28,6 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
-
-        /// <summary>
-        /// Kamera
-        /// </summary>
-        private LookAtCamera lookAtCam;
-
-        //Pomocni vektori preko kojih definisemo lookAt funkciju
-        private Vertex direction;
-        private Vertex right;
-        private Vertex up;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -58,7 +47,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 10.0f;
+        private float m_sceneDistance = 7000.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -174,7 +163,8 @@ namespace AssimpSample
             this.m_scene = new AssimpScene(scenePath, sceneFileName, gl);
             this.m_width = width;
             this.m_height = height;
-
+            cb = new Cube();
+            cyl = new Cylinder();
             m_textures = new uint[m_textureCount];
         }
 
@@ -200,14 +190,6 @@ namespace AssimpSample
             // Model sencenja na flat (konstantno)
             gl.ShadeModel(OpenGL.GL_FLAT);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
-
-            SetupLighting(gl);
-
-
-
-            // Ukljucuje se color tracking mehanizam
-            gl.Enable(OpenGL.GL_COLOR_MATERIAL);
-            gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
 
             // Teksture se primenjuju sa parametrom decal
             gl.Enable(OpenGL.GL_TEXTURE_2D);
@@ -238,22 +220,6 @@ namespace AssimpSample
                 image.Dispose();
             }
 
-            cb = new Cube();
-            //cb.Material = new SharpGL.SceneGraph.Assets.Material();
-            //cb.Material.Ambient = Color.Gray;
-            cyl = new Cylinder();
-
-            lookAtCam = new LookAtCamera
-            {
-                Position = new Vertex(10f, 0f, 0f),
-                Target = new Vertex(0f, 0f, 0f),
-                UpVector = new Vertex(0f, -1f, 0f)
-            };
-            // right = new Vertex(1f, 0f, 0f);
-            // direction = new Vertex(0f, 0f, -1f);
-            // lookAtCam.Target = lookAtCam.Position + direction;
-            lookAtCam.Project(gl);
-
             m_scene.LoadScene();
             m_scene.Initialize();
         }
@@ -274,12 +240,10 @@ namespace AssimpSample
 
             //podesavanje tekstura
             //setTextures(gl
-            lookAtCam.Project(gl);
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
-            //  gl.Translate(0.0f, -750f, -m_sceneDistance);
-        //    gl.Translate(0.0f, 0.0f, 0.0f);
+            gl.Translate(0.0f, -750f, -m_sceneDistance);
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
@@ -302,7 +266,7 @@ namespace AssimpSample
         /// Iscrtava podlogu
         /// </summary>
         /// <param name="gl"></param>
-        public void drawFloor(OpenGL gl)s
+        public void drawFloor(OpenGL gl)
         {
             gl.PushMatrix();
             //gl.Color(0.09f, 0.43f, 0.34f);
@@ -363,7 +327,6 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Scale(scale, scale, scale);
                 gl.Translate(5 + i, 0, -0.5);
-                //cb.Material.Bind(gl);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
@@ -492,28 +455,7 @@ namespace AssimpSample
             gl.LoadIdentity();                // resetuj ModelView Matrix
         }
 
-        /// <summary>
-        /// Podesavanje osvetljenja
-        /// </summary>
-        private void SetupLighting(OpenGL gl)
-        {
-           /* float[] position0 = new float[] { 100.0f, 100.0f, m_sceneDistance + 200f, 1.0f };
-            float[] ambient0 = { 1f, 1f, 1f, 1f };
-            float[] diffuse0 = { 100.0f, 100.0f, 0f, 0.5f };
-            // Pridruži komponente svetlosnom izvoru 0
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambient0);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, diffuse0);
-            // Podesi parametre tackastog svetlosnog izvora
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 60.0f);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_EXPONENT, 5.0f);
 
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, position0);
-            gl.Enable(OpenGL.GL_LIGHTING);
-            gl.Enable(OpenGL.GL_LIGHT0);
-
-            // Ukljuci automatsku normalizaciju nad normalama
-            gl.Enable(OpenGL.GL_NORMALIZE);*/
-        }
 
         /// <summary>
         ///  Implementacija IDisposable interfejsa.
