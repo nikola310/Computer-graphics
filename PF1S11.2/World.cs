@@ -190,6 +190,9 @@ namespace AssimpSample
             // Model sencenja na flat (konstantno)
             gl.ShadeModel(OpenGL.GL_FLAT);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
+            //Ukljucen color tracking mehanizam
+            gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+            gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
 
             // Teksture se primenjuju sa parametrom decal
             gl.Enable(OpenGL.GL_TEXTURE_2D);
