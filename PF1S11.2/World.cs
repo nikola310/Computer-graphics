@@ -250,13 +250,13 @@ namespace AssimpSample
             m_scene.Draw();
 
             //iscrtavanje podloge
-            drawFloor(gl);
+            DrawFloor(gl);
 
-            drawEscalator(gl);
+            DrawEscalator(gl);
 
             gl.PopMatrix();
 
-            drawBlue3DText(gl);
+            DrawBlue3DText(gl);
 
             // Oznaci kraj iscrtavanja
             gl.Flush();
@@ -266,7 +266,7 @@ namespace AssimpSample
         /// Iscrtava podlogu
         /// </summary>
         /// <param name="gl"></param>
-        public void drawFloor(OpenGL gl)
+        public void DrawFloor(OpenGL gl)
         {
             gl.PushMatrix();
             //gl.Color(0.09f, 0.43f, 0.34f);
@@ -300,7 +300,7 @@ namespace AssimpSample
         /// Podesava teksture
         /// </summary>
         /// <param name="gl"></param>
-        public void setTextures(OpenGL gl)
+        public void SetTextures(OpenGL gl)
         {
             gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);
             gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);
@@ -312,7 +312,7 @@ namespace AssimpSample
         /// <summary>
         /// Iscrtava pokretne stepenice.
         /// </summary>
-        public void drawEscalator(OpenGL gl)
+        public void DrawEscalator(OpenGL gl)
         {
             //iscrtavanje samih stepenica
             //===========================================
@@ -406,7 +406,7 @@ namespace AssimpSample
         /// Iscrtava 3D tekst u donjem desnom uglu prozora
         /// </summary>
         /// <param name="gl"></param>
-        public void drawBlue3DText(OpenGL gl)
+        public void DrawBlue3DText(OpenGL gl)
         {
             //===================================
             //definisanje potrebnih promenljivih
