@@ -28,18 +28,6 @@ namespace AssimpSample
     {
         #region Atributi
 
-        // Atributi koji uticu na ponasanje FPS kamere
-        private LookAtCamera lookAtCam;
-        private float walkSpeed = 0.1f;
-        float mouseSpeed = 0.005f;
-        double horizontalAngle = 0f;
-        double verticalAngle = 0.0f;
-
-        //Pomocni vektori preko kojih definisemo lookAt funkciju
-        private Vertex direction;
-        private Vertex right;
-        private Vertex up;
-
         /// <summary>
         ///	 Scena koja se prikazuje.
         /// </summary>
@@ -58,7 +46,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 0.0f;
+        private float m_sceneDistance = 750.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -242,18 +230,6 @@ namespace AssimpSample
                 image.Dispose();
             }
 
-            // Podesavanje inicijalnih parametara kamere
-            //lookAtCam = new LookAtCamera
-            //{
-            ///Position = new Vertex(0f, 10f, 0f),
-            ///Target = new Vertex(0f, 5f, 0f),
-            /// UpVector = new Vertex(0f, 1f, 0f)
-            ///};
-            //right = new Vertex(1f, 0f, 0f);
-            //direction = new Vertex(0f, 0f, -1f);
-            //lookAtCam.Target = lookAtCam.Position + direction;
-            //lookAtCam.Project(gl);
-
             SetupLighting(gl);
 
             m_scene.LoadScene();
@@ -265,10 +241,7 @@ namespace AssimpSample
         /// </summary>
         private void SetupLighting(OpenGL gl)
         {
-            //float[] pozicija = new float[] { 10000.0f, 10000.0f, -m_sceneDistance + 200f, 1.0f };
-            float[] pozicija = new float[] { 5.0f, 5.0f, 10.0f, 1.0f };
-            //float[] ambijentalnaKomponenta = { 0.3f, 0.3f, 0.3f, 1f };
-            //float[] difuznaKomponenta = { 0.7f, 0.7f, 0.7f, 1.0f };
+            float[] pozicija = new float[] { 5.0f, 0.0f, 10.0f, 1.0f };
             float[] spekularnaKomponenta = { 1.0f, 1.0f, 1.0f, 1.0f };
             float[] ambijentalnaKomponenta = { 1f, 1f, 1f, 1f };
             float[] difuznaKomponenta = { 1000000000.0f, 1000000000.0f, 1000000000.0f, 0.5f };
@@ -282,9 +255,25 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_LIGHT0);
 
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pozicija);
-            
+
+            // Reflektorski svetlosni izvor
+            float[] refPozicija = new float[] { 15.0f, 25.0f, 0.0f, 1.0f };
+            //float[] refSpekularnaKomponenta = { 1.0f, 1.0f, 1.0f, 1.0f };
+            float[] refAmbijentalnaKomponenta = { 0.0f, 0.0f, 1.0f, 1.0f };
+            float[] refDifuznaKomponenta = { 0.0f, 0.0f, 1000000.0f, 0.5f };
+            float[] smer = { 0.0f, -1.0f, 0.0f };
+
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, refAmbijentalnaKomponenta);
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, refDifuznaKomponenta);
+            // Podesi parametre reflektorskog izvora
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, smer);
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 35.0f);
+            // Ukljuci svetlosni izvor
+            gl.Enable(OpenGL.GL_LIGHT1);
+            // Pozicioniraj svetloni izvor
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, refPozicija);
+
             gl.Enable(OpenGL.GL_LIGHTING);
-            
             // Ukljuci automatsku normalizaciju nad normalama
             gl.Enable(OpenGL.GL_NORMALIZE);
             gl.Enable(OpenGL.GL_AUTO_NORMAL);
@@ -316,7 +305,6 @@ namespace AssimpSample
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             gl.Scale(20, 20, 20);
             m_scene.Draw();
-
             //iscrtavanje podloge
             DrawFloor(gl);
 
@@ -337,46 +325,23 @@ namespace AssimpSample
         public void DrawFloor(OpenGL gl)
         {
             gl.PushMatrix();
-            //gl.Color(0.09f, 0.43f, 0.34f);
-            //gl.Begin(OpenGL.GL_QUADS);
-            /*gl.Vertex(300f, 0f, 300f);
-            gl.Vertex(300f, 0f, -300f);
-            gl.Vertex(-300f, 0f, -300f);
-            gl.Vertex(-300f, 0f, 300f);
-            gl.End();
-            gl.PopMatrix();*/
-
-
-            // Pod tunela
             gl.MatrixMode(OpenGL.GL_TEXTURE_MATRIX);
-            //gl.Scale(10f, 10f, 10f);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Ceramic]);
+            gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
+            gl.Scale(10f, 10f, 10f);
             gl.Begin(OpenGL.GL_QUADS);
             gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, 300f, 300f, 0f, -300f, -300f, 0f, -300f));
             gl.TexCoord(0.0f, 0.0f);
-            gl.Vertex(300f, 0f, 300f);
-            gl.TexCoord(0.0f, 1.0f);
-            gl.Vertex(300f, 0f, -300f);
-            gl.TexCoord(1.0f, 1.0f);
-            gl.Vertex(-300f, 0f, -300f);
+            gl.Vertex(30f, 0f, 30f);
+            gl.TexCoord(0.0f, 4.0f);
+            gl.Vertex(30f, 0f, -30f);
+            gl.TexCoord(4.0f, 4.0f);
+            gl.Vertex(-30f, 0f, -30f);
             gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, -300f, -300f, 0f, -300f, -300f, 0f, 300f));
-            gl.TexCoord(1.0f, 0.0f);
-            gl.Vertex(-300f, 0f, 300f);
+            gl.TexCoord(4.0f, 0.0f);
+            gl.Vertex(-30f, 0f, 30f);
             gl.End();
             gl.PopMatrix();
-        }
-
-        /// <summary>
-        /// Podesava teksture
-        /// </summary>
-        /// <param name="gl"></param>
-        public void SetTextures(OpenGL gl)
-        {
-            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);
-            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);
-            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);
-            gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
         }
 
         /// <summary>
@@ -389,7 +354,7 @@ namespace AssimpSample
             float scale = 15f;
 
             gl.PushMatrix();
-            gl.Color(0.5f, 0.5f, 0.5f);
+            //gl.Color(0.5f, 0.5f, 0.5f);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Metal]);
             for (int i = 0; i <= 8; i += 2)
             {
@@ -534,20 +499,6 @@ namespace AssimpSample
             gl.Perspective(45f, (double)width / height, 0.5f, 20000f);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.LoadIdentity();                // resetuj ModelView Matrix
-        }
-
-        /// <summary>
-        ///  Azurira poziciju kamere preko tipki tastature
-        /// </summary>
-        public void UpdateCameraPosition(int deltaX, int deltaY, int deltaZ)
-        {
-            Vertex deltaForward = direction * deltaZ;
-            Vertex deltaStrafe = right * deltaX;
-            Vertex deltaUp = up * deltaY;
-            Vertex delta = deltaForward + deltaStrafe + deltaUp;
-            lookAtCam.Position += (delta * walkSpeed);
-            lookAtCam.Target = lookAtCam.Position + direction;
-            lookAtCam.UpVector = up;
         }
 
         /// <summary>

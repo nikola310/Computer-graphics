@@ -24,3 +24,6 @@ C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\obj\Debug\PF1S11.2.cspro
 C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\obj\Debug\PF1S11.2.csproj.CoreCompileInputs.cache
 C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\obj\Debug\PF1S11.2.exe
 C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\obj\Debug\PF1S11.2.pdb
+C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\bin\Debug\3D Models\Man running N090413.gsm
+C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\bin\Debug\3D Models\Man-running.3ds
+C:\Users\Nikola\source\repos\Computer-graphics\PF1S11.2\bin\Debug\3D Models\Man-Fima.3ds
