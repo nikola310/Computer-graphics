@@ -31,6 +31,15 @@ namespace AssimpSample
         /// Kamera
         /// </summary>
         private LookAtCamera lookAtCam;
+        private float walkSpeed = 0.05f;
+        float mouseSpeed = 0.05f;
+        double horizontalAngle = 0f;
+        double verticalAngle = 0.0f;
+
+        //Pomocni vektori preko kojih definisemo lookAt funkciju
+        private Vertex direction;
+        private Vertex right;
+        private Vertex up;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -92,6 +101,11 @@ namespace AssimpSample
         ///	 Identifikatori OpenGL tekstura
         /// </summary>
         private uint[] m_textures = null;
+
+        /// <summary>
+        /// Omogucava interakciju preko tastature
+        /// </summary>
+        public bool keyEventsEnabled = true;
 
         Cube cb;
         Cylinder cyl;
@@ -220,8 +234,12 @@ namespace AssimpSample
                 FieldOfView = 60,
                 AspectRatio = 1,
                 Near = 0.5f,
-                Far = 1000f
+                Far = 20000f
             };
+            right = new Vertex(1f, 0f, 0f);
+            direction = new Vertex(0f, 0f, -1f);
+            up = right.VectorProduct(direction);
+            lookAtCam.Project(gl);
         }
 
         /// <summary>
@@ -330,9 +348,11 @@ namespace AssimpSample
 
             gl.PushMatrix();
 
+            gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
             lookAtCam.Project(gl);
 
             gl.PushMatrix();
+
             gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
             gl.Rotate(0.0f, 90.0f, 0.0f);
             gl.Translate(0.0f, 0.0f, -10.0f);
@@ -374,6 +394,52 @@ namespace AssimpSample
             gl.Vertex(-30f, 0f, 30f);
             gl.End();
             gl.PopMatrix();
+        }
+
+        /// <summary>
+        ///  Azurira poziciju kamere preko tipki tastature
+        /// </summary>
+        public void UpdateCameraPosition(int positionFactor)
+        {
+            Vertex delta = new Vertex(0, 0, 0);
+
+            if (positionFactor > 0 && lookAtCam.Position.Y >= 0.6)
+            {
+                delta -= lookAtCam.Position;
+            }
+            else if (positionFactor < 0)
+            {
+                delta += lookAtCam.Position;
+            }
+
+            lookAtCam.Position += (delta * walkSpeed);
+
+            //potrebno proveriti ovaj direction!
+            lookAtCam.Target = lookAtCam.Position + direction;
+            lookAtCam.UpVector = up;
+        }
+
+        /// <summary>
+        ///  Azurira rotaciju kamere preko pomeraja misa
+        /// </summary>
+        public void UpdateCameraRotation(double deltaX, double deltaY)
+        {
+            horizontalAngle += mouseSpeed * deltaX;
+            verticalAngle += mouseSpeed * deltaY;
+
+            direction.X = (float)(Math.Cos(verticalAngle) * Math.Sin(horizontalAngle));
+            direction.Y = (float)(Math.Sin(verticalAngle));
+            direction.Z = (float)(Math.Cos(verticalAngle) * Math.Cos(horizontalAngle));
+
+            right.X = (float)Math.Sin(horizontalAngle - (Math.PI / 2));
+            right.Y = 0f;
+            right.Z = (float)Math.Cos(horizontalAngle - (Math.PI / 2));
+
+            if (right.VectorProduct(direction).Y > -0.15)
+                up = right.VectorProduct(direction);
+
+            lookAtCam.Target = lookAtCam.Position + direction;
+            lookAtCam.UpVector = up;
         }
 
         /// <summary>

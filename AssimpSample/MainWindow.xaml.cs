@@ -1,19 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using SharpGL.SceneGraph;
-using SharpGL;
 using Microsoft.Win32;
 
 
@@ -44,7 +34,6 @@ namespace AssimpSample
             try
             {
                 m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models\\person"), "Man_Pose008.3ds", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
-                //m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models\\diver"), "diver.obj", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
             }
             catch (Exception e)
             {
@@ -89,19 +78,43 @@ namespace AssimpSample
         {
             switch (e.Key)
             {
-                case Key.F4: this.Close(); break;
-                case Key.W: m_world.RotationX -= 5.0f; break;
-                case Key.S: m_world.RotationX += 5.0f; break;
-                case Key.A: m_world.RotationY -= 5.0f; break;
-                case Key.D: m_world.RotationY += 5.0f; break;
-                case Key.Add: m_world.SceneDistance -= 5.0f; break;
-                case Key.Subtract: m_world.SceneDistance += 5.0f; break;
+                case Key.F4:
+                    if(m_world.keyEventsEnabled)
+                        this.Close();
+                    break;
+                case Key.Add:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraPosition(1);
+                    break;
+                case Key.Subtract:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraPosition(-1);
+                    break;
+                case Key.S:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraRotation(1, 0);
+                    break;
+                case Key.F:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraRotation(-1, 0);
+                    break;
+                case Key.E:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraRotation(0, 1);
+                    break;
+                case Key.D:
+                    if (m_world.keyEventsEnabled)
+                        m_world.UpdateCameraRotation(0, -1);
+                    break;
+                case Key.V:
+                    if (m_world.keyEventsEnabled)
+                        Console.WriteLine("Not implemented yet...");
+                    break;
                 case Key.F2:
                     OpenFileDialog opfModel = new OpenFileDialog();
                     bool result = (bool) opfModel.ShowDialog();
                     if (result)
                     {
-
                         try
                         {
                             World newWorld = new World(Directory.GetParent(opfModel.FileName).ToString(), Path.GetFileName(opfModel.FileName), (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
