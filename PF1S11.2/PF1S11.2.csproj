@@ -109,6 +109,12 @@
     <None Include="3D Models\3d-model.3ds">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="3D Models\scientistHIGH.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="3D Models\scientistLOW.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

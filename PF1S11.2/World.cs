@@ -284,6 +284,17 @@ namespace AssimpSample
         /// </summary>
         public void Draw(OpenGL gl)
         {
+/*            gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+
+            gl.PushMatrix();
+            gl.Translate(0.0f, 0.0f, -m_sceneDistance);
+            gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
+            gl.Scale(100, 100, 100);
+            m_scene.Draw();
+            gl.PopMatrix();
+            // Oznaci kraj iscrtavanja
+            gl.Flush();*/
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
             gl.Enable(OpenGL.GL_DEPTH_TEST);
@@ -292,27 +303,52 @@ namespace AssimpSample
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
             gl.Perspective(45f, (double)m_width / m_height, 0.5f, 20000f);
-
+            //gl.Viewport(0, 0, m_width, m_height);
             //podesavanje tekstura
             //SetTextures(gl);
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
+            //gl.LoadIdentity();
             //lookAtCam.Project(gl);
-
             gl.PushMatrix();
-            gl.Translate(0.0f, -750f, -m_sceneDistance);
-            gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
-            gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
-            gl.Scale(20, 20, 20);
-            m_scene.Draw();
-            //iscrtavanje podloge
-            DrawFloor(gl);
+                gl.PushMatrix();
+                    gl.Translate(0.0f, -750f, -m_sceneDistance);
+                    gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
+                     gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
+                      //gl.PopMatrix();
+                    //gl.PushMatrix();
+                    gl.Scale(200, 200, 200);
+                    m_scene.Draw();
+                gl.PopMatrix();
+            
+     //iscrtavanje podloge
+     //            DrawFloor(gl);
+     /*gl.PushMatrix();
+                                                                    gl.MatrixMode(OpenGL.GL_TEXTURE_MATRIX);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Ceramic]);
+                  gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
+                //gl.Scale(10f, 10f, 10f);
+                     gl.Begin(OpenGL.GL_QUADS);
+                 gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, 300f, 300f, 0f, -300f, -300f, 0f, -300f));
+                 gl.TexCoord(0.0f, 0.0f);
+                 gl.Vertex(30f, 0f, 30f);
+                     gl.TexCoord(0.0f, 4.0f);
+                    gl.Vertex(30f, 0f, -30f);
+                     gl.TexCoord(4.0f, 4.0f);
+                    gl.Vertex(-30f, 0f, -30f);
+                    gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, -300f, -300f, 0f, -300f, -300f, 0f, 300f));
+                    gl.TexCoord(4.0f, 0.0f);
+                    gl.Vertex(-30f, 0f, 30f);
+                    gl.End();
+                gl.PopMatrix();*/
 
-            DrawEscalator(gl);
 
-            gl.PopMatrix();
 
-            DrawBlue3DText(gl);
+            //DrawEscalator(gl);
+
+            //gl.PopMatrix();
+
+           DrawBlue3DText(gl);
 
             // Oznaci kraj iscrtavanja
             gl.Flush();
@@ -328,16 +364,16 @@ namespace AssimpSample
             gl.MatrixMode(OpenGL.GL_TEXTURE_MATRIX);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Ceramic]);
             gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
-            gl.Scale(10f, 10f, 10f);
+            //gl.Scale(10f, 10f, 10f);
             gl.Begin(OpenGL.GL_QUADS);
-            gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, 300f, 300f, 0f, -300f, -300f, 0f, -300f));
+            gl.Normal(LightingUtilities.FindFaceNormal(30f, 0f, 30f, 30f, 0f, -30f, -30f, 0f, -30f));
             gl.TexCoord(0.0f, 0.0f);
             gl.Vertex(30f, 0f, 30f);
             gl.TexCoord(0.0f, 4.0f);
             gl.Vertex(30f, 0f, -30f);
             gl.TexCoord(4.0f, 4.0f);
             gl.Vertex(-30f, 0f, -30f);
-            gl.Normal(LightingUtilities.FindFaceNormal(300f, 0f, -300f, -300f, 0f, -300f, -300f, 0f, 300f));
+            gl.Normal(LightingUtilities.FindFaceNormal(30f, 0f, -30f, -30f, 0f, -30f, -30f, 0f, 30f));
             gl.TexCoord(4.0f, 0.0f);
             gl.Vertex(-30f, 0f, 30f);
             gl.End();

@@ -45,7 +45,7 @@ namespace PF1S11._2
             {
                 //ucitavanje modela osobe
                 String s = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models");
-                m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models"), "3d-model.3ds", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
+                m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models"), "scientistHIGH.obj", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
             }
             catch (Exception e)
             {
@@ -92,24 +92,10 @@ namespace PF1S11._2
             {
                 case Key.F4: this.Close(); break;
                 case Key.E:
-                    if (m_world.RotationX <= 0.0f)
-                    {
-                        break;
-                    }
-                    else
-                    {
                         m_world.RotationX -= 5.0f; break;
-                    }
                 case Key.D:
-                    if (m_world.RotationX >= 170.0f)
-                    {
-                        break;
-                    }
-                    else
-                    {
                         m_world.RotationX += 5.0f;
                         break;
-                    }
                 case Key.S: m_world.RotationY -= 5.0f; break;
                 case Key.F: m_world.RotationY += 5.0f; break;
                 case Key.Add: m_world.SceneDistance -= 100.0f; break;

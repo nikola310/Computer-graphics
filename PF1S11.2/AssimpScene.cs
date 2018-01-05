@@ -146,7 +146,7 @@ namespace AssimpSample
         private void RenderNode(Node node)
         {
             gl.PushMatrix();
-
+            
             // Primena tranformacija, definisanih za dati cvor.
             float[] matrix = new float[16] { node.Transform.A1, node.Transform.B1, node.Transform.C1, node.Transform.D1, node.Transform.A2, node.Transform.B2, node.Transform.C2, node.Transform.D2, node.Transform.A3, node.Transform.B3, node.Transform.C3, node.Transform.D3, node.Transform.A4, node.Transform.B4, node.Transform.C4, node.Transform.D4 };
             gl.MultMatrix(matrix);
