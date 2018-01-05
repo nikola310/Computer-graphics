@@ -89,13 +89,13 @@ namespace AssimpSample
         {
             switch (e.Key)
             {
-                case Key.F10: this.Close(); break;
+                case Key.F4: this.Close(); break;
                 case Key.W: m_world.RotationX -= 5.0f; break;
                 case Key.S: m_world.RotationX += 5.0f; break;
                 case Key.A: m_world.RotationY -= 5.0f; break;
                 case Key.D: m_world.RotationY += 5.0f; break;
-                case Key.Add: m_world.SceneDistance -= 10.0f; break;
-                case Key.Subtract: m_world.SceneDistance += 10.0f; break;
+                case Key.Add: m_world.SceneDistance -= 5.0f; break;
+                case Key.Subtract: m_world.SceneDistance += 5.0f; break;
                 case Key.F2:
                     OpenFileDialog opfModel = new OpenFileDialog();
                     bool result = (bool) opfModel.ShowDialog();

@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using SharpGL;
+using SharpGL.SceneGraph;
+using SharpGL.SceneGraph.Cameras;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
@@ -24,6 +26,11 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
+
+        /// <summary>
+        /// Kamera
+        /// </summary>
+        private LookAtCamera lookAtCam;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -193,8 +200,28 @@ namespace AssimpSample
 
             Setup_Lighting(gl);
 
+            Set_Camera(gl);
+
             m_scene.LoadScene();
             m_scene.Initialize();
+        }
+
+        /// <summary>
+        /// Inicijalizacija kamere
+        /// </summary>
+        /// <param name="gl"></param>
+        public void Set_Camera(OpenGL gl)
+        {
+            lookAtCam = new LookAtCamera
+            {
+                Position = new Vertex(-20.0f, 14.376f, 0.0f),
+                Target = new Vertex(0.0f, 0.0f, 0.0f),
+                UpVector = new Vertex(0.0f, 1.0f, 0.0f),
+                FieldOfView = 60,
+                AspectRatio = 1,
+                Near = 0.5f,
+                Far = 1000f
+            };
         }
 
         /// <summary>
@@ -203,52 +230,39 @@ namespace AssimpSample
         /// <param name="gl"></param>
         public void Setup_Lighting(OpenGL gl)
         {
-            //float[] ambLight = { 0.65f, 0.65f, 0.65f, 1.0f };
-            //float[] difLight = { 0.6f, 0.6f, 0.6f, 1.0f };
-            //float[] spcLight = { 0.95f, 0.95f, 0.95f, 1.0f };
-            //float[] lightPos = { 0.0f, 200.0f, 0.0f, 1.0f };
+            float[] ambLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+            float[] difLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+            float[] spcLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+            float[] lightPos = { 5.0f, 0.0f, 10000.0f, 1.0f };
 
-            //// Boja pozadine je bela, a boja ispisa je crna
+            // Boja pozadine je bela, a boja ispisa je crna
             //gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             //gl.Color(0.0f, 0.0f, 0.0f);
 
-            //// Rad sa osvetljenjem
-            //// Ukljuci normalizaciju
-            //gl.Enable(OpenGL.GL_TEXTURE_2D);
-            //gl.Enable(OpenGL.GL_LIGHTING);
-            //gl.Enable(OpenGL.GL_NORMALIZE);
+            // Rad sa osvetljenjem
+            // Ukljuci normalizaciju
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.Enable(OpenGL.GL_LIGHTING);
+            gl.Enable(OpenGL.GL_NORMALIZE);
+            gl.Enable(OpenGL.GL_AUTO_NORMAL);
 
-            //// Podesi osvetljenje
+            // Podesi osvetljenje
             //gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, ambLight);
 
-            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f);
-            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, lightPos);
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambLight);
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, difLight);
+            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, spcLight);
 
-            ////gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambLight);
-            ////gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, difLight);
-            ////gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, spcLight);
-            //gl.Enable(OpenGL.GL_LIGHT0);
-
-            float[] pozicija = new float[] { 5.0f, 0.0f, 10.0f, 1.0f };
-            float[] spekularnaKomponenta = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] ambijentalnaKomponenta = { 1f, 1f, 1f, 1f };
-            float[] difuznaKomponenta = { 1000000000.0f, 1000000000.0f, 1000000000.0f, 0.5f };
-            // Pridruži komponente svetlosnom izvoru 0
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambijentalnaKomponenta);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, difuznaKomponenta);
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, spekularnaKomponenta);
-            // Podesi parametre tackastog svetlosnog izvora
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f);
-            // Ukljuci svetlosni izvor
-            gl.Enable(OpenGL.GL_LIGHT0);
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, lightPos);
 
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pozicija);
+            gl.Enable(OpenGL.GL_LIGHT0);
 
             // Reflektorski svetlosni izvor
             float[] refPozicija = new float[] { 15.0f, 25.0f, 0.0f, 1.0f };
             //float[] refSpekularnaKomponenta = { 1.0f, 1.0f, 1.0f, 1.0f };
             float[] refAmbijentalnaKomponenta = { 0.0f, 0.0f, 1.0f, 1.0f };
-            float[] refDifuznaKomponenta = { 0.0f, 0.0f, 1000000.0f, 0.5f };
+            float[] refDifuznaKomponenta = { 0.0f, 0.0f, 1.0f, 0.5f };
             float[] smer = { 0.0f, -1.0f, 0.0f };
 
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, refAmbijentalnaKomponenta);
@@ -260,11 +274,6 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_LIGHT1);
             // Pozicioniraj svetloni izvor
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, refPozicija);
-
-            gl.Enable(OpenGL.GL_LIGHTING);
-            // Ukljuci automatsku normalizaciju nad normalama
-            gl.Enable(OpenGL.GL_NORMALIZE);
-            gl.Enable(OpenGL.GL_AUTO_NORMAL);
         }
 
         /// <summary>
@@ -320,13 +329,18 @@ namespace AssimpSample
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
             gl.PushMatrix();
+
+            lookAtCam.Project(gl);
+
             gl.PushMatrix();
+            gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
             gl.Rotate(0.0f, 90.0f, 0.0f);
             gl.Translate(0.0f, 0.0f, -10.0f);
             gl.Scale(7.0f, 7.0f, 7.0f);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             m_scene.Draw();
             gl.PopMatrix();
-
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
             DrawFloor(gl);
 
             DrawEscalator(gl);
@@ -348,8 +362,6 @@ namespace AssimpSample
             gl.MatrixMode(OpenGL.GL_TEXTURE_MATRIX);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Ceramic]);
             gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
-            //gl.Scale(10f, 10f, 10f);
-            //gl.Color(0.05f, 0.05f, 0.05f);
             gl.Begin(OpenGL.GL_QUADS);
             gl.Normal(LightingUtilities.FindFaceNormal(30f, 0f, 30f, 30f, 0f, -30f, -30f, 0f, -30f));
             gl.TexCoord(0.0f, 0.0f);
@@ -358,7 +370,6 @@ namespace AssimpSample
             gl.Vertex(30f, 0f, -30f);
             gl.TexCoord(4.0f, 4.0f);
             gl.Vertex(-30f, 0f, -30f);
-            gl.Normal(LightingUtilities.FindFaceNormal(30f, 0f, -30f, -30f, 0f, -30f, -30f, 0f, 30f));
             gl.TexCoord(4.0f, 0.0f);
             gl.Vertex(-30f, 0f, 30f);
             gl.End();
