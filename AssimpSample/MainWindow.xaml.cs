@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using SharpGL.SceneGraph;
 using Microsoft.Win32;
-
+using System.Globalization;
 
 namespace AssimpSample
 {
@@ -79,7 +79,7 @@ namespace AssimpSample
             switch (e.Key)
             {
                 case Key.F4:
-                    if(m_world.keyEventsEnabled)
+                    if (m_world.keyEventsEnabled)
                         this.Close();
                     break;
                 case Key.Add:
@@ -114,7 +114,7 @@ namespace AssimpSample
                     break;
                 case Key.F2:
                     OpenFileDialog opfModel = new OpenFileDialog();
-                    bool result = (bool) opfModel.ShowDialog();
+                    bool result = (bool)opfModel.ShowDialog();
                     if (result)
                     {
                         try
@@ -126,7 +126,7 @@ namespace AssimpSample
                         }
                         catch (Exception exp)
                         {
-                            MessageBox.Show("Neuspesno kreirana instanca OpenGL sveta:\n" + exp.Message, "GRESKA", MessageBoxButton.OK );
+                            MessageBox.Show("Neuspesno kreirana instanca OpenGL sveta:\n" + exp.Message, "GRESKA", MessageBoxButton.OK);
                         }
                     }
                     break;
@@ -138,28 +138,23 @@ namespace AssimpSample
             try
             {
                 m_world.AmbientComponent = Array.ConvertAll(setAmbient.Text.Split(','), float.Parse);
-
-                Console.WriteLine(m_world.AmbientComponent);
-                /*for (int j = 0; j < (m_world.AmbientComponent).Length; j++)
-                {
-                    Console.WriteLine(m_world.AmbientComponent[j]);
-                }
-
-                int i = 0;
-
-                i = (setAmbient.Text.ToString()).Count(f => f == ',');
-
-                Console.WriteLine(i);
-
-                if (i != 3)
-                    MessageBox.Show("Format must be 'xf, xf, xf, xf'!");*/
             }
             catch
             {
-                MessageBox.Show("Format must be 'xf, xf, xf, xf'!");
+                MessageBox.Show(this, messageBoxText: "Format of the text must be: x,y,z,w", caption: "Parsing error", button: MessageBoxButton.OK, icon: MessageBoxImage.Error);
             }
-            setAmbient.Text = "";
-            openGLControl.Focus();
+        }
+
+        private void Scale_Person_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                m_world.Obesity = float.Parse(scalePerson.Text, CultureInfo.InvariantCulture.NumberFormat);
+            }
+            catch
+            {
+                MessageBox.Show(this, messageBoxText: "Scale factor must be a number!", caption: "Parsing error", button: MessageBoxButton.OK, icon: MessageBoxImage.Error);
+            }
         }
     }
 }

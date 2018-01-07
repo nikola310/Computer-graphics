@@ -1,11 +1,16 @@
 ﻿<Window x:Class="AssimpSample.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SharpGL WPF Application" Height="350" Width="525" 
+        Title="SharpGL WPF Application" Height="350" Width="529.667" 
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF" KeyDown="Window_KeyDown">
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar HorizontalAlignment="Left">
+                <Label>
+                    Person scale factor:
+                </Label>
+                <TextBox Name="scalePerson" Width="100">7.0</TextBox>
+                <Button Background="LightGray" BorderBrush="Black" Click="Scale_Person_Click">Scale</Button>
                 <Label>
                     Ambient component:
                 </Label>

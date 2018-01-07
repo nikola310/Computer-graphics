@@ -113,6 +113,10 @@ namespace AssimpSample
         /// </summary>
         private float[] ambientComponent = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+        /// <summary>
+        /// Faktor skaliranja osobe po x osi.
+        /// </summary>
+        private float obesity = 7.0f;
         Cube cb;
         Cylinder cyl;
 
@@ -187,6 +191,12 @@ namespace AssimpSample
         {
             get { return m_height; }
             set { m_height = value; }
+        }
+
+        public float Obesity
+        {
+            get { return obesity; }
+            set { obesity = value; }
         }
 
         #endregion Properties
@@ -386,12 +396,16 @@ namespace AssimpSample
             gl.Flush();
         }
 
+        /// <summary>
+        /// Iscrtavanje modela osobe
+        /// </summary>
+        /// <param name="gl"></param>
         public void Draw_Person(OpenGL gl)
         {
             gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
             gl.Rotate(0.0f, 90.0f, 0.0f);
             gl.Translate(translatePersonX, translatePersonY, translatePersonZ);
-            gl.Scale(7.0f, 7.0f, 7.0f);
+            gl.Scale(obesity, 7.0f, 7.0f);
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             m_scene.Draw();
             gl.PopMatrix();
@@ -647,12 +661,18 @@ namespace AssimpSample
             gl.PopMatrix();
         }
 
+        /// <summary>
+        /// Funkcija koja odredjuje translaciju osobe u sklopu animacije.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void MovePerson(object sender, EventArgs e)
         {
             if (translatePersonZ <= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
             {
                 translatePersonZ += 0.5f;
-            }else if(translatePersonZ >= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
+            }
+            else if (translatePersonZ >= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
             {
                 translatePersonY += 0.256f;
                 translatePersonZ += 0.5f;
@@ -666,6 +686,9 @@ namespace AssimpSample
             }
         }
 
+        /// <summary>
+        /// Funkcija koja pokrece animaciju.
+        /// </summary>
         public void Start_Animation()
         {
             timer1 = new DispatcherTimer
