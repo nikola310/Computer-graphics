@@ -3,13 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SharpGL WPF Application" Height="350" Width="525" 
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF" KeyDown="Window_KeyDown">
-    <Grid>
-        
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar HorizontalAlignment="Left">
+                <Label>
+                    Ambient component:
+                </Label>
+                <TextBox Name="setAmbient" Width="100">1.0, 1.0, 1.0</TextBox>
+                <Button Background="LightGray" BorderBrush="Black" Click="Set_Ambient_Click">Set</Button>
+            </ToolBar>
+        </ToolBarTray>
         <!-- The OpenGL control provides a OpenGL drawing surface. -->
         <sharpGL:OpenGLControl 
             Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" 
             OpenGLInitialized="openGLControl_OpenGLInitialized" Resized="openGLControl_Resized"
-            DrawFPS="True" RenderContextType="FBO" FrameRate="10"/>
-        
-    </Grid>
+            DrawFPS="True" RenderContextType="FBO" FrameRate="20"/>
+
+    </DockPanel>
 </Window>

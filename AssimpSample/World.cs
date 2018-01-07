@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Threading;
 using SharpGL;
 using SharpGL.SceneGraph;
 using SharpGL.SceneGraph.Cameras;
@@ -107,8 +108,22 @@ namespace AssimpSample
         /// </summary>
         public bool keyEventsEnabled = true;
 
+        /// <summary>
+        /// Ambijentalna komponenta tackastog izvora svetlosti
+        /// </summary>
+        private float[] ambientComponent = { 1.0f, 1.0f, 1.0f, 1.0f };
+
         Cube cb;
         Cylinder cyl;
+
+        /// <summary>
+        /// Parametri za animaciju
+        /// </summary>
+        private DispatcherTimer timer1;
+        private float translatePersonX = 0.0f;
+        private float translatePersonY = 0.0f;
+        private float translatePersonZ = -10.0f;
+        private bool animationRunning = false;
 
         #endregion Atributi
 
@@ -157,6 +172,12 @@ namespace AssimpSample
         {
             get { return m_width; }
             set { m_width = value; }
+        }
+
+        public float[] AmbientComponent
+        {
+            get { return ambientComponent; }
+            set { ambientComponent = value; }
         }
 
         /// <summary>
@@ -212,9 +233,9 @@ namespace AssimpSample
             // Rad sa teksturama
             Set_Textures(gl);
 
-            Setup_Lighting(gl);
-
             Set_Camera(gl);
+
+            Setup_Lighting(gl);
 
             m_scene.LoadScene();
             m_scene.Initialize();
@@ -236,9 +257,10 @@ namespace AssimpSample
                 Near = 0.5f,
                 Far = 20000f
             };
-            right = new Vertex(1f, 0f, 0f);
-            direction = new Vertex(0f, 0f, -1f);
+            right = new Vertex(1.0f, 0.0f, 0.0f);
+            direction = new Vertex(0.0f, 0.0f, 0.0f);
             up = right.VectorProduct(direction);
+            //lookAtCam.Target = lookAtCam.Position + direction;
             lookAtCam.Project(gl);
         }
 
@@ -253,10 +275,6 @@ namespace AssimpSample
             float[] spcLight = { 1.0f, 1.0f, 1.0f, 1.0f };
             float[] lightPos = { 5.0f, 0.0f, 10000.0f, 1.0f };
 
-            // Boja pozadine je bela, a boja ispisa je crna
-            //gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            //gl.Color(0.0f, 0.0f, 0.0f);
-
             // Rad sa osvetljenjem
             // Ukljuci normalizaciju
             gl.Enable(OpenGL.GL_TEXTURE_2D);
@@ -267,7 +285,7 @@ namespace AssimpSample
             // Podesi osvetljenje
             //gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, ambLight);
 
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambLight);
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambientComponent);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, difLight);
             //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, spcLight);
 
@@ -292,6 +310,8 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_LIGHT1);
             // Pozicioniraj svetloni izvor
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, refPozicija);
+
+            gl.ShadeModel(OpenGL.GL_SMOOTH);
         }
 
         /// <summary>
@@ -353,14 +373,8 @@ namespace AssimpSample
 
             gl.PushMatrix();
 
-            gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
-            gl.Rotate(0.0f, 90.0f, 0.0f);
-            gl.Translate(0.0f, 0.0f, -10.0f);
-            gl.Scale(7.0f, 7.0f, 7.0f);
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
-            m_scene.Draw();
-            gl.PopMatrix();
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
+            Draw_Person(gl);
+
             DrawFloor(gl);
 
             DrawEscalator(gl);
@@ -370,6 +384,18 @@ namespace AssimpSample
             gl.PopMatrix();
             // Oznaci kraj iscrtavanja
             gl.Flush();
+        }
+
+        public void Draw_Person(OpenGL gl)
+        {
+            gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
+            gl.Rotate(0.0f, 90.0f, 0.0f);
+            gl.Translate(translatePersonX, translatePersonY, translatePersonZ);
+            gl.Scale(7.0f, 7.0f, 7.0f);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
+            m_scene.Draw();
+            gl.PopMatrix();
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
         }
 
         /// <summary>
@@ -435,7 +461,7 @@ namespace AssimpSample
             right.Y = 0f;
             right.Z = (float)Math.Cos(horizontalAngle - (Math.PI / 2));
 
-            if (right.VectorProduct(direction).Y > -0.15)
+            if (right.VectorProduct(direction).Y > -0.2)
                 up = right.VectorProduct(direction);
 
             lookAtCam.Target = lookAtCam.Position + direction;
@@ -621,6 +647,36 @@ namespace AssimpSample
             gl.PopMatrix();
         }
 
+        public void MovePerson(object sender, EventArgs e)
+        {
+            if (translatePersonZ <= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
+            {
+                translatePersonZ += 0.5f;
+            }else if(translatePersonZ >= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
+            {
+                translatePersonY += 0.256f;
+                translatePersonZ += 0.5f;
+            }
+            else
+            {
+                translatePersonZ = -10.0f;
+                translatePersonY = 0.0f;
+                keyEventsEnabled = true;
+                animationRunning = false;
+            }
+        }
+
+        public void Start_Animation()
+        {
+            timer1 = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(100)
+            };
+            timer1.Tick += new EventHandler(MovePerson);
+            timer1.Start();
+            keyEventsEnabled = false;
+            animationRunning = true;
+        }
 
         /// <summary>
         /// Podesava viewport i projekciju za OpenGL kontrolu.

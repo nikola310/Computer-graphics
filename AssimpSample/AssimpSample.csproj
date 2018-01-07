@@ -112,9 +112,6 @@
     <None Include="3D Models\person\Man_Pose008.3ds">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="3D Models\person\Man_Pose008.obj">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

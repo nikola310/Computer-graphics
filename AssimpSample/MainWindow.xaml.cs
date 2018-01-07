@@ -108,7 +108,9 @@ namespace AssimpSample
                     break;
                 case Key.V:
                     if (m_world.keyEventsEnabled)
-                        Console.WriteLine("Not implemented yet...");
+                    {
+                        m_world.Start_Animation();
+                    }
                     break;
                 case Key.F2:
                     OpenFileDialog opfModel = new OpenFileDialog();
@@ -129,6 +131,35 @@ namespace AssimpSample
                     }
                     break;
             }
+        }
+
+        private void Set_Ambient_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                m_world.AmbientComponent = Array.ConvertAll(setAmbient.Text.Split(','), float.Parse);
+
+                Console.WriteLine(m_world.AmbientComponent);
+                /*for (int j = 0; j < (m_world.AmbientComponent).Length; j++)
+                {
+                    Console.WriteLine(m_world.AmbientComponent[j]);
+                }
+
+                int i = 0;
+
+                i = (setAmbient.Text.ToString()).Count(f => f == ',');
+
+                Console.WriteLine(i);
+
+                if (i != 3)
+                    MessageBox.Show("Format must be 'xf, xf, xf, xf'!");*/
+            }
+            catch
+            {
+                MessageBox.Show("Format must be 'xf, xf, xf, xf'!");
+            }
+            setAmbient.Text = "";
+            openGLControl.Focus();
         }
     }
 }
