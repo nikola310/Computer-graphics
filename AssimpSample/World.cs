@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using SharpGL;
 using SharpGL.SceneGraph;
@@ -27,15 +28,6 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
-
-        /// <summary>
-        /// Kamera
-        /// </summary>
-        private LookAtCamera lookAtCam;
-        private float walkSpeed = 0.05f;
-        float mouseSpeed = 0.05f;
-        double horizontalAngle = 0f;
-        double verticalAngle = 0.0f;
 
         //Pomocni vektori preko kojih definisemo lookAt funkciju
         private Vertex direction;
@@ -60,7 +52,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 20.0f;
+        private float m_sceneDistance = 0.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -128,7 +120,11 @@ namespace AssimpSample
         private float translatePersonY = 0.0f;
         private float translatePersonZ = -10.0f;
         private bool animationRunning = false;
-
+        private float translateEscZ;
+        private float translateEscY;
+        private float Speed = 0.2f;
+        private float[] translateEscalatorX = { 5.0f, 7.0f, 9.0f, 11.0f, 13.0f, 15.0f, 17.0f };
+        private float[] translateEscalatorY = { 0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f };
         #endregion Atributi
 
         #region Properties
@@ -243,35 +239,12 @@ namespace AssimpSample
             // Rad sa teksturama
             Set_Textures(gl);
 
-            Set_Camera(gl);
+            //Set_Camera(gl);
 
             Setup_Lighting(gl);
 
             m_scene.LoadScene();
             m_scene.Initialize();
-        }
-
-        /// <summary>
-        /// Inicijalizacija kamere
-        /// </summary>
-        /// <param name="gl"></param>
-        public void Set_Camera(OpenGL gl)
-        {
-            lookAtCam = new LookAtCamera
-            {
-                Position = new Vertex(-20.0f, 14.376f, 0.0f),
-                Target = new Vertex(0.0f, 0.0f, 0.0f),
-                UpVector = new Vertex(0.0f, 1.0f, 0.0f),
-                FieldOfView = 60,
-                AspectRatio = 1,
-                Near = 0.5f,
-                Far = 20000f
-            };
-            right = new Vertex(1.0f, 0.0f, 0.0f);
-            direction = new Vertex(0.0f, 0.0f, 0.0f);
-            up = right.VectorProduct(direction);
-            //lookAtCam.Target = lookAtCam.Position + direction;
-            lookAtCam.Project(gl);
         }
 
         /// <summary>
@@ -376,10 +349,12 @@ namespace AssimpSample
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
+            gl.LookAt(-20.0f, 10.0f, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
             gl.PushMatrix();
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
-            lookAtCam.Project(gl);
+            //lookAtCam.Project(gl);
 
             gl.PushMatrix();
 
@@ -437,52 +412,6 @@ namespace AssimpSample
         }
 
         /// <summary>
-        ///  Azurira poziciju kamere preko tipki tastature
-        /// </summary>
-        public void UpdateCameraPosition(int positionFactor)
-        {
-            Vertex delta = new Vertex(0, 0, 0);
-
-            if (positionFactor > 0 && lookAtCam.Position.Y >= 0.6)
-            {
-                delta -= lookAtCam.Position;
-            }
-            else if (positionFactor < 0)
-            {
-                delta += lookAtCam.Position;
-            }
-
-            lookAtCam.Position += (delta * walkSpeed);
-
-            //potrebno proveriti ovaj direction!
-            lookAtCam.Target = lookAtCam.Position + direction;
-            lookAtCam.UpVector = up;
-        }
-
-        /// <summary>
-        ///  Azurira rotaciju kamere preko pomeraja misa
-        /// </summary>
-        public void UpdateCameraRotation(double deltaX, double deltaY)
-        {
-            horizontalAngle += mouseSpeed * deltaX;
-            verticalAngle += mouseSpeed * deltaY;
-
-            direction.X = (float)(Math.Cos(verticalAngle) * Math.Sin(horizontalAngle));
-            direction.Y = (float)(Math.Sin(verticalAngle));
-            direction.Z = (float)(Math.Cos(verticalAngle) * Math.Cos(horizontalAngle));
-
-            right.X = (float)Math.Sin(horizontalAngle - (Math.PI / 2));
-            right.Y = 0f;
-            right.Z = (float)Math.Cos(horizontalAngle - (Math.PI / 2));
-
-            if (right.VectorProduct(direction).Y > -0.2)
-                up = right.VectorProduct(direction);
-
-            lookAtCam.Target = lookAtCam.Position + direction;
-            lookAtCam.UpVector = up;
-        }
-
-        /// <summary>
         /// Iscrtava 3D tekst u donjem desnom uglu prozora
         /// </summary>
         /// <param name="gl"></param>
@@ -522,87 +451,25 @@ namespace AssimpSample
         /// </summary>
         public void DrawEscalator(OpenGL gl)
         {
-            //iscrtavanje samih stepenica
-            //===========================================
-            float scale = 1.0f;
-
             gl.PushMatrix();
             //gl.Color(0.5f, 0.5f, 0.5f);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Metal]);
-            for (int i = 0; i <= 8; i += 2)
+            //iscrtavanje samih stepenica
+            //===========================================
+            float scaleX = 1.0f;
+            float scaleY = 0.5f;
+            float scaleZ = 2.15f;
+            for (int i = 0; i < translateEscalatorX.Length; i++)
             {
                 gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(5 + i, 0, -0.5);
+                gl.Scale(scaleX, scaleY, scaleZ);
+                gl.Translate(translateEscalatorX[i], translateEscalatorY[i], 0.25);
                 cb.Render(gl, RenderMode.Render);
                 gl.PopMatrix();
             }
 
-            for (int i = 0; i <= 6; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(7 + i, 2, -0.5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 4; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(9 + i, 4, -0.5);
-
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 2; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(11 + i, 6, -0.5);
-
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 8; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(5 + i, 0, 1.5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 6; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(7 + i, 2, 1.5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 4; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(9 + i, 4, 1.5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
-
-            for (int i = 0; i <= 2; i += 2)
-            {
-                gl.PushMatrix();
-                gl.Scale(scale, scale, scale);
-                gl.Translate(11 + i, 6, 1.5);
-                cb.Render(gl, RenderMode.Render);
-                gl.PopMatrix();
-            }
             gl.PopMatrix();
+
             //=====================================
             // Drska
             gl.PushMatrix();
@@ -614,6 +481,7 @@ namespace AssimpSample
             cyl.Height = 10;
             cyl.BaseRadius = 0.25;
             cyl.CreateInContext(gl);
+            
             cyl.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
@@ -656,9 +524,17 @@ namespace AssimpSample
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
             gl.PopMatrix();
-            //===============================
+            //=====================================
 
             gl.PopMatrix();
+        }
+
+        /// <summary>
+        ///  Funkcija ograničava vrednost na opseg min - max
+        /// </summary>
+        public static float Clamp(float value, float min, float max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
         }
 
         /// <summary>
@@ -686,6 +562,26 @@ namespace AssimpSample
             }
         }
 
+        public void MoveEscalator(object sender, EventArgs e)
+        {
+            if (animationRunning == true)
+            {
+                for (int i = 0; i < translateEscalatorX.Length; i++)
+                {
+                    if (translateEscalatorX[i] < 17.0f)
+                    {
+                        translateEscalatorX[i] += Speed;
+                        translateEscalatorY[i] += Speed;
+                    }
+                    else
+                    {
+                        translateEscalatorX[i] = 5.0f;
+                        translateEscalatorY[i] = 0.0f;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Funkcija koja pokrece animaciju.
         /// </summary>
@@ -693,12 +589,32 @@ namespace AssimpSample
         {
             timer1 = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(100)
+                Interval = TimeSpan.FromMilliseconds(200)
             };
+            timer1.Tick += new EventHandler(MoveEscalator);
             timer1.Tick += new EventHandler(MovePerson);
             timer1.Start();
+            /*timer2 = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(10)
+            };
+            timer2.Tick += new EventHandler(UpdateAnimation2);
+            timer2.Start();*/
             keyEventsEnabled = false;
             animationRunning = true;
+        }
+
+        //Stepenice
+        private void UpdateAnimation1(object sender, EventArgs e)
+        {
+            translateEscZ += Speed;
+            translateEscY += Speed;
+        }
+        //Stepenice reset
+        private void UpdateAnimation2(object sender, EventArgs e)
+        {
+            translateEscZ = 0.0f;
+            translateEscY = 0.0f;
         }
 
         /// <summary>
