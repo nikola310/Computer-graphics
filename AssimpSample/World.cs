@@ -9,11 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using SharpGL;
-using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Cameras;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
@@ -28,11 +25,6 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
-
-        //Pomocni vektori preko kojih definisemo lookAt funkciju
-        private Vertex direction;
-        private Vertex right;
-        private Vertex up;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -52,7 +44,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 0.0f;
+        private float m_sceneDistance = 70.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -108,7 +100,7 @@ namespace AssimpSample
         /// <summary>
         /// Faktor skaliranja osobe po x osi.
         /// </summary>
-        private float obesity = 7.0f;
+        private float obesity = 8.0f;
         Cube cb;
         Cylinder cyl;
 
@@ -120,11 +112,11 @@ namespace AssimpSample
         private float translatePersonY = 0.0f;
         private float translatePersonZ = -10.0f;
         private bool animationRunning = false;
-        private float translateEscZ;
-        private float translateEscY;
-        private float Speed = 0.2f;
-        private float[] translateEscalatorX = { 5.0f, 7.0f, 9.0f, 11.0f, 13.0f, 15.0f, 17.0f };
-        private float[] translateEscalatorY = { 0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f };
+        private float v = 0.2f;
+        private float[] translateEscalatorX = { 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f };
+        private float[] translateEscalatorY = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f };
+        private bool personOnEscalator = false;
+
         #endregion Atributi
 
         #region Properties
@@ -354,13 +346,15 @@ namespace AssimpSample
             gl.PushMatrix();
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
-            //lookAtCam.Project(gl);
 
+            gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
             gl.PushMatrix();
 
             Draw_Person(gl);
 
             DrawFloor(gl);
+
+            gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
 
             DrawEscalator(gl);
 
@@ -471,7 +465,6 @@ namespace AssimpSample
             gl.PopMatrix();
 
             //=====================================
-            // Drska
             gl.PushMatrix();
             gl.Translate(3.0f, 1.5f, 2.75f);
             gl.Rotate(90f, 0f, 1f, 0f);
@@ -481,7 +474,7 @@ namespace AssimpSample
             cyl.Height = 10;
             cyl.BaseRadius = 0.25;
             cyl.CreateInContext(gl);
-            
+
             cyl.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
@@ -544,14 +537,15 @@ namespace AssimpSample
         /// <param name="e"></param>
         public void MovePerson(object sender, EventArgs e)
         {
-            if (translatePersonZ <= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
+            if (translatePersonZ <= 2.5f && translatePersonZ <= 15.4f && animationRunning == true)
             {
                 translatePersonZ += 0.5f;
             }
-            else if (translatePersonZ >= -0.5f && translatePersonZ <= 13.0f && animationRunning == true)
+            else if (translatePersonZ > 2.5f && translatePersonZ <= 15.4f && animationRunning == true)
             {
-                translatePersonY += 0.256f;
-                translatePersonZ += 0.5f;
+                personOnEscalator = true;
+                translatePersonY += 0.256f * 7 / obesity;
+                translatePersonZ += 0.5f * 7 / obesity;
             }
             else
             {
@@ -566,12 +560,15 @@ namespace AssimpSample
         {
             if (animationRunning == true)
             {
+                if (personOnEscalator)
+                    v = 0.1f; //v * 7 / obesity;
+
                 for (int i = 0; i < translateEscalatorX.Length; i++)
                 {
                     if (translateEscalatorX[i] < 17.0f)
                     {
-                        translateEscalatorX[i] += Speed;
-                        translateEscalatorY[i] += Speed;
+                        translateEscalatorX[i] += v;
+                        translateEscalatorY[i] += v;
                     }
                     else
                     {
@@ -594,27 +591,8 @@ namespace AssimpSample
             timer1.Tick += new EventHandler(MoveEscalator);
             timer1.Tick += new EventHandler(MovePerson);
             timer1.Start();
-            /*timer2 = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(10)
-            };
-            timer2.Tick += new EventHandler(UpdateAnimation2);
-            timer2.Start();*/
             keyEventsEnabled = false;
             animationRunning = true;
-        }
-
-        //Stepenice
-        private void UpdateAnimation1(object sender, EventArgs e)
-        {
-            translateEscZ += Speed;
-            translateEscY += Speed;
-        }
-        //Stepenice reset
-        private void UpdateAnimation2(object sender, EventArgs e)
-        {
-            translateEscZ = 0.0f;
-            translateEscY = 0.0f;
         }
 
         /// <summary>

@@ -82,16 +82,38 @@ namespace AssimpSample
                     if (m_world.keyEventsEnabled)
                         this.Close();
                     break;
-                case Key.W: m_world.RotationX -= 5.0f; break;
-                case Key.S: m_world.RotationX += 5.0f; break;
-                case Key.A: m_world.RotationY -= 5.0f; break;
-                case Key.D: m_world.RotationY += 5.0f; break;
-                case Key.Add: m_world.SceneDistance -= 5.0f; break;
-                case Key.Subtract: m_world.SceneDistance += 5.0f; break;
+                case Key.E:
+                    if (m_world.keyEventsEnabled)
+                        if (m_world.RotationX > -10.0f)
+                            m_world.RotationX -= 5.0f;
+                    break;
+                case Key.D:
+                    if (m_world.keyEventsEnabled)
+                        if (m_world.RotationX < 90.0f)
+                            m_world.RotationX += 5.0f;
+                    break;
+                case Key.S:
+                    if (m_world.keyEventsEnabled)
+                        m_world.RotationY -= 5.0f;
+                    break;
+                case Key.F:
+                    if (m_world.keyEventsEnabled)
+                        m_world.RotationY += 5.0f;
+                    break;
+                case Key.Add:
+                    if (m_world.keyEventsEnabled)
+                        m_world.SceneDistance -= 5.0f;
+                    break;
+                case Key.Subtract:
+                    if (m_world.keyEventsEnabled)
+                        m_world.SceneDistance += 5.0f;
+                    break;
                 case Key.V:
                     if (m_world.keyEventsEnabled)
                     {
                         m_world.Start_Animation();
+                        setAmbientButton.IsEnabled = false;
+                        scalePersonButton.IsEnabled = false;
                     }
                     break;
                 case Key.F2:

@@ -10,12 +10,12 @@
                     Person scale factor:
                 </Label>
                 <TextBox Name="scalePerson" Width="100">7.0</TextBox>
-                <Button Background="LightGray" BorderBrush="Black" Click="Scale_Person_Click">Scale</Button>
+                <Button Name="scalePersonButton" Background="LightGray" BorderBrush="Black" Click="Scale_Person_Click">Scale</Button>
                 <Label>
                     Ambient component:
                 </Label>
                 <TextBox Name="setAmbient" Width="100">1.0, 1.0, 1.0</TextBox>
-                <Button Background="LightGray" BorderBrush="Black" Click="Set_Ambient_Click">Set</Button>
+                <Button Name="setAmbientButton" Background="LightGray" BorderBrush="Black" Click="Set_Ambient_Click">Set</Button>
             </ToolBar>
         </ToolBarTray>
         <!-- The OpenGL control provides a OpenGL drawing surface. -->
