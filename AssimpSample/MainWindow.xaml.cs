@@ -33,7 +33,10 @@ namespace AssimpSample
             // Kreiranje OpenGL sveta
             try
             {
-                m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models\\person"), "Man_Pose008.3ds", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL);
+                m_world = new World(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "3D Models\\person"), "Man_Pose008.3ds", (int)openGLControl.Width, (int)openGLControl.Height, openGLControl.OpenGL)
+                {
+                    App = this
+                };
             }
             catch (Exception e)
             {

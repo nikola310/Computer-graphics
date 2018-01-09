@@ -32,6 +32,11 @@ namespace AssimpSample
         private AssimpScene m_scene;
 
         /// <summary>
+        /// Aplikacija
+        /// </summary>
+        private MainWindow app;
+
+        /// <summary>
         ///	 Ugao rotacije sveta oko X ose.
         /// </summary>
         private float m_xRotation = 0.0f;
@@ -100,7 +105,7 @@ namespace AssimpSample
         /// <summary>
         /// Faktor skaliranja osobe po x osi.
         /// </summary>
-        private float obesity = 8.0f;
+        private float obesity = 7.0f;
         Cube cb;
         Cylinder cyl;
 
@@ -112,10 +117,9 @@ namespace AssimpSample
         private float translatePersonY = 0.0f;
         private float translatePersonZ = -10.0f;
         private bool animationRunning = false;
-        private float v = 0.2f;
+        private float v = 0.256f;
         private float[] translateEscalatorX = { 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f };
         private float[] translateEscalatorY = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f };
-        private bool personOnEscalator = false;
 
         #endregion Atributi
 
@@ -187,6 +191,15 @@ namespace AssimpSample
             set { obesity = value; }
         }
 
+        public MainWindow App
+        {
+            get { return app; }
+            set
+            {
+                app = value;
+            }
+        }
+
         #endregion Properties
 
         #region Konstruktori
@@ -233,7 +246,7 @@ namespace AssimpSample
 
             //Set_Camera(gl);
 
-            Setup_Lighting(gl);
+            //Setup_Lighting(gl);
 
             m_scene.LoadScene();
             m_scene.Initialize();
@@ -331,6 +344,8 @@ namespace AssimpSample
         public void Draw(OpenGL gl)
         {
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+
+            Setup_Lighting(gl);
 
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             gl.LoadIdentity();
@@ -464,15 +479,15 @@ namespace AssimpSample
 
             gl.PopMatrix();
 
-            //=====================================
+            //===========================================
             gl.PushMatrix();
             gl.Translate(3.0f, 1.5f, 2.75f);
-            gl.Rotate(90f, 0f, 1f, 0f);
-            gl.Rotate(-43, 1, 0, 0);
+            gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
+            gl.Rotate(-28.0f, 1.0f, 0.0f, 0.0f);
             gl.Color(0.36f, 0.36f, 0.36f);
-            cyl.TopRadius = 0.25;
-            cyl.Height = 10;
-            cyl.BaseRadius = 0.25;
+            cyl.TopRadius = 0.25f;
+            cyl.Height = 15.3f;
+            cyl.BaseRadius = 0.25f;
             cyl.CreateInContext(gl);
 
             cyl.Render(gl, RenderMode.Render);
@@ -486,7 +501,7 @@ namespace AssimpSample
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(10.5f, 4.0f, 2.75f);
+            gl.Translate(16.5f, 4.0f, 2.75f);
             gl.Scale(0.25f, 5.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
@@ -495,11 +510,8 @@ namespace AssimpSample
             gl.PushMatrix();
             gl.Translate(3.0f, 1.5f, -1.75f);
             gl.Rotate(90f, 0f, 1f, 0f);
-            gl.Rotate(-43, 1, 0, 0);
+            gl.Rotate(-28.0f, 1.0f, 0.0f, 0.0f);
             gl.Color(0.36f, 0.36f, 0.36f);
-            cyl.TopRadius = 0.25;
-            cyl.Height = 10;
-            cyl.BaseRadius = 0.25;
             cyl.CreateInContext(gl);
             cyl.Render(gl, RenderMode.Render);
             gl.PopMatrix();
@@ -512,22 +524,14 @@ namespace AssimpSample
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(10.5f, 4.0f, -1.75f);
+            gl.Translate(16.5f, 4.0f, -1.75f);
             gl.Scale(0.25f, 5.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
             gl.PopMatrix();
-            //=====================================
+            //===========================================
 
             gl.PopMatrix();
-        }
-
-        /// <summary>
-        ///  Funkcija ograničava vrednost na opseg min - max
-        /// </summary>
-        public static float Clamp(float value, float min, float max)
-        {
-            return (value < min) ? min : (value > max) ? max : value;
         }
 
         /// <summary>
@@ -543,9 +547,15 @@ namespace AssimpSample
             }
             else if (translatePersonZ > 2.5f && translatePersonZ <= 15.4f && animationRunning == true)
             {
-                personOnEscalator = true;
-                translatePersonY += 0.256f * 7 / obesity;
-                translatePersonZ += 0.5f * 7 / obesity;
+                if (obesity >= 20.0f)
+                {
+                    v = 0.1f; //v * 7 / obesity;
+                }
+
+                //translatePersonY += 0.256f * 7 / obesity;
+                //translatePersonZ += 0.5f * 7 / obesity;
+                translatePersonY += v;
+                translatePersonZ += 2 * v;
             }
             else
             {
@@ -553,6 +563,8 @@ namespace AssimpSample
                 translatePersonY = 0.0f;
                 keyEventsEnabled = true;
                 animationRunning = false;
+                App.scalePersonButton.IsEnabled = true;
+                App.setAmbientButton.IsEnabled = true;
             }
         }
 
@@ -560,8 +572,7 @@ namespace AssimpSample
         {
             if (animationRunning == true)
             {
-                if (personOnEscalator)
-                    v = 0.1f; //v * 7 / obesity;
+                
 
                 for (int i = 0; i < translateEscalatorX.Length; i++)
                 {
