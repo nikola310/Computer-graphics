@@ -49,7 +49,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 70.0f;
+        private float m_sceneDistance = 10.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -118,8 +118,23 @@ namespace AssimpSample
         private float translatePersonZ = -10.0f;
         private bool animationRunning = false;
         private float v = 0.256f;
-        private float[] translateEscalatorX = { 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f };
+        private float[] translateEscalatorX = { -5.0f, -6.0f, -7.0f, -8.0f, -9.0f, -10.0f, -11.0f, -12.0f, -13.0f, -14.0f, -15.0f, -16.0f, -17.0f };
         private float[] translateEscalatorY = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f };
+
+        /// <summary>
+        /// Parametri za osvetljenje - tackasti svetlosni izvor
+        /// </summary>
+        private float[] ambLight = { 1.0f, 1.0f, 1.0f, 1.0f };
+        private float[] difLight = { 10.0f, 10.0f, 10.0f, 1.0f };
+        private float[] lightPos = { -5000000.0f, 1000000.0f, 1000000.0f, 1.0f };
+
+        /// <summary>
+        /// Parametri za osvetljenje - reflektorski svetlosni izvor 
+        /// </summary>
+        private float[] refPozicija = new float[] { -10.0f, 25.0f, 0.0f, 1.0f };
+        private float[] refAmbijentalnaKomponenta = { 0.0f, 0.0f, 1.0f, 1.0f };
+        private float[] refDifuznaKomponenta = { 0.0f, 0.0f, 1.0f, 1.0f };
+        private float[] smer = { 0.0f, -1.0f, 0.0f };
 
         #endregion Atributi
 
@@ -258,46 +273,31 @@ namespace AssimpSample
         /// <param name="gl"></param>
         public void Setup_Lighting(OpenGL gl)
         {
-            float[] ambLight = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] difLight = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] spcLight = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] lightPos = { 5.0f, 0.0f, 10000.0f, 1.0f };
-
             // Rad sa osvetljenjem
             // Ukljuci normalizaciju
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.Enable(OpenGL.GL_LIGHTING);
             gl.Enable(OpenGL.GL_NORMALIZE);
             gl.Enable(OpenGL.GL_AUTO_NORMAL);
-
-            // Podesi osvetljenje
-            //gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, ambLight);
+            
 
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, ambientComponent);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, difLight);
-            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, spcLight);
 
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, lightPos);
 
             gl.Enable(OpenGL.GL_LIGHT0);
 
-            // Reflektorski svetlosni izvor
-            float[] refPozicija = new float[] { 15.0f, 25.0f, 0.0f, 1.0f };
-            //float[] refSpekularnaKomponenta = { 1.0f, 1.0f, 1.0f, 1.0f };
-            float[] refAmbijentalnaKomponenta = { 0.0f, 0.0f, 1.0f, 1.0f };
-            float[] refDifuznaKomponenta = { 0.0f, 0.0f, 1.0f, 0.5f };
-            float[] smer = { 0.0f, -1.0f, 0.0f };
-
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, refAmbijentalnaKomponenta);
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, refDifuznaKomponenta);
             // Podesi parametre reflektorskog izvora
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, smer);
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 35.0f);
-            // Ukljuci svetlosni izvor
-            gl.Enable(OpenGL.GL_LIGHT1);
             // Pozicioniraj svetloni izvor
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, refPozicija);
+            // Ukljuci svetlosni izvor
+            gl.Enable(OpenGL.GL_LIGHT1);
 
             gl.ShadeModel(OpenGL.GL_SMOOTH);
         }
@@ -356,20 +356,18 @@ namespace AssimpSample
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
-            gl.LookAt(-20.0f, 10.0f, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+            gl.LookAt(20.0f, 10.0f, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
             gl.PushMatrix();
 
             gl.MatrixMode(OpenGL.GL_MODELVIEW_MATRIX);
 
-            gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
+            
             gl.PushMatrix();
 
             Draw_Person(gl);
 
             DrawFloor(gl);
-
-            gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
 
             DrawEscalator(gl);
 
@@ -387,7 +385,7 @@ namespace AssimpSample
         public void Draw_Person(OpenGL gl)
         {
             gl.Color(0.65f, 0.65f, 0.65f, 0.0f);
-            gl.Rotate(0.0f, 90.0f, 0.0f);
+            gl.Rotate(0.0f, -90.0f, 0.0f);
             gl.Translate(translatePersonX, translatePersonY, translatePersonZ);
             gl.Scale(obesity, 7.0f, 7.0f);
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
@@ -481,9 +479,9 @@ namespace AssimpSample
 
             //===========================================
             gl.PushMatrix();
-            gl.Translate(3.0f, 1.5f, 2.75f);
+            gl.Translate(-3.0f, 1.5f, 2.75f);
             gl.Rotate(90.0f, 0.0f, 1.0f, 0.0f);
-            gl.Rotate(-28.0f, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(-152.0f, 1.0f, 0.0f, 0.0f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cyl.TopRadius = 0.25f;
             cyl.Height = 15.3f;
@@ -494,37 +492,37 @@ namespace AssimpSample
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(3.0f, 1.0f, 2.75f);
+            gl.Translate(-3.0f, 1.0f, 2.75f);
             gl.Scale(0.25f, 1.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(16.5f, 4.0f, 2.75f);
+            gl.Translate(-16.5f, 4.0f, 2.75f);
             gl.Scale(0.25f, 5.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(3.0f, 1.5f, -1.75f);
+            gl.Translate(-3.0f, 1.5f, -1.75f);
             gl.Rotate(90f, 0f, 1f, 0f);
-            gl.Rotate(-28.0f, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(-152.0f, 1.0f, 0.0f, 0.0f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cyl.CreateInContext(gl);
             cyl.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(3.0f, 1.0f, -1.75f);
+            gl.Translate(-3.0f, 1.0f, -1.75f);
             gl.Scale(0.25f, 1.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
             gl.PopMatrix();
 
             gl.PushMatrix();
-            gl.Translate(16.5f, 4.0f, -1.75f);
+            gl.Translate(-16.5f, 4.0f, -1.75f);
             gl.Scale(0.25f, 5.0f, 0.25f);
             gl.Color(0.36f, 0.36f, 0.36f);
             cb.Render(gl, RenderMode.Render);
@@ -549,11 +547,8 @@ namespace AssimpSample
             {
                 if (obesity >= 20.0f)
                 {
-                    v = 0.1f; //v * 7 / obesity;
+                    v = 0.1f;
                 }
-
-                //translatePersonY += 0.256f * 7 / obesity;
-                //translatePersonZ += 0.5f * 7 / obesity;
                 translatePersonY += v;
                 translatePersonZ += 2 * v;
             }
@@ -572,18 +567,16 @@ namespace AssimpSample
         {
             if (animationRunning == true)
             {
-                
-
                 for (int i = 0; i < translateEscalatorX.Length; i++)
                 {
-                    if (translateEscalatorX[i] < 17.0f)
+                    if (translateEscalatorX[i] > -17.0f)
                     {
-                        translateEscalatorX[i] += v;
+                        translateEscalatorX[i] -= v;
                         translateEscalatorY[i] += v;
                     }
                     else
                     {
-                        translateEscalatorX[i] = 5.0f;
+                        translateEscalatorX[i] = -5.0f;
                         translateEscalatorY[i] = 0.0f;
                     }
                 }

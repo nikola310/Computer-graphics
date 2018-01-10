@@ -87,7 +87,7 @@ namespace AssimpSample
                     break;
                 case Key.E:
                     if (m_world.keyEventsEnabled)
-                        if (m_world.RotationX > -10.0f)
+                        if (m_world.RotationX > -5.0f)
                             m_world.RotationX -= 5.0f;
                     break;
                 case Key.D:
@@ -145,6 +145,7 @@ namespace AssimpSample
             try
             {
                 m_world.AmbientComponent = Array.ConvertAll(setAmbient.Text.Split(','), float.Parse);
+                float[] tmp = Array.ConvertAll(setAmbient.Text.Split(','), float.Parse);
             }
             catch
             {
